@@ -19,6 +19,7 @@
     "react-hook-form": "^7.41.0",
     "react-markdown": "^8.0.4",
     "react-router": "^6.5.0",
+    "react-router-dom": "^6.5.0",
     "react-scripts": "^5.0.1",
     "rehype-raw": "^6.1.1",
     "sort-by": "^1.2.0",

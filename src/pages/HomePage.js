@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Alert, Box, Container, Stack } from "@mui/material";
 import LoadingScreen from "../components/LoadingScreen";
+import TransactionsList from "../components/TransactionList"
 
 function HomePage() {
   const [loading, setLoading] = useState(true);
@@ -22,7 +23,7 @@ function HomePage() {
           ) : (
             <>
               <Stack>
-
+                <TransactionsList />
               </Stack>
             </>
           )}

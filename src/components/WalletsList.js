@@ -11,7 +11,7 @@ const BackgroundList = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-function ListOfWallets({walletObject}) {
+function WalletsList({walletObject}) {
     return (
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
@@ -48,4 +48,4 @@ function ListOfWallets({walletObject}) {
     );
 }
 
-export default ListOfWallets
+export default WalletsList

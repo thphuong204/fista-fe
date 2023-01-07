@@ -14,9 +14,7 @@ function HomePage() {
 
   return (
     <Container sx={{ display: "flex", minHeight: "100vh", mt: 3 }}>
-      <Stack>
-      </Stack>
-      <Stack sx={{ flexGrow: 1 }}>
+      <Stack style={{ width: "100%"}}>
         <Box sx={{ position: "relative", height: 1 }}>
           {loading ? (
             <LoadingScreen />

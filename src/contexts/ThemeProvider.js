@@ -9,9 +9,16 @@ const PRIMARY = {
   light: "#fffdfa",
   main: "#fffcf5",
   dark: "#fffbf2",
-  darker: "#FFFAF0"
+  darker: "#fffaf0"
 };
 const SECONDARY = {
+  lighter: "#ebf0fa",
+  light: "#739ae0",
+  main: "#3770d4",
+  dark: "#264e94",
+  darker: "#162c54"
+};
+const WARNING = {
   lighter: "#ffffcc",
   light: "#fff2b2",
   main: "#ffde8a",
@@ -19,12 +26,19 @@ const SECONDARY = {
   darker: "#ffcc66"
 };
 const SUCCESS = {
-  lighter: "#E9FCD4",
-  light: "#AAF27F",
-  main: "#54D62C",
-  dark: "#229A16",
-  darker: "#08660D",
-  contrastText: "#FFF",
+  lighter: "#ebf1f1",
+  light: "#d7e4e4",
+  main: "#bad0d0",
+  dark: "#a6c2c2",
+  darker: "#9dbcbc",
+  contrastText: "#ffffff",
+};
+const INFO = {
+  lighter: "#f9f9f9",
+  light: "#f6f6f6",
+  main: "#e3e3e3",
+  dark: "#4c4c4c",
+  darker: "#000000",
 };
 
 function ThemeProvider({ children }) {
@@ -33,6 +47,8 @@ function ThemeProvider({ children }) {
       primary: PRIMARY,
       secondary: SECONDARY,
       success: SUCCESS,
+      info: INFO,
+      warning: WARNING
     },
     shape: { borderRadius: 8 },
   };

@@ -21,7 +21,7 @@ function Router() {
         }
       >
         <Route index element={<HomePage />} />
-        <Route path="transactions/" element={<HomePage />} />
+        <Route path="transs/" element={<HomePage />} />
         <Route path="wallets/" element={<WalletPage />} />
         <Route path="wallets/:id" element={<WalletDetails />} />
         {/* For category route */}

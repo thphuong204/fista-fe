@@ -1,17 +1,33 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
-import { Box, Grid, List, Typography, Container } from '@mui/material';
-
-const data = [1,2,3];
+import { Box, Grid, List, Typography, Container, Pagination, PaginationItem } from '@mui/material';
 
 const BackgroundList = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-const TransactionsByDate = () => {
+
+
+function TransactionsByDate () {
   return (
-    <div style={{ margin: "0 0 10px", border:" 1px solid black", borderLeft:"none", borderRight:"none"}}>
-      <Box style={{ minHeight: "50px", display: "flex", alignItems: "center", paddingLeft: "16px", borderBottom: "1px solid" }}>
+    <div 
+      style={{ 
+      margin: "0 0 30px", 
+      border:" 1px solid black", 
+      borderLeft:"none", 
+      borderRight:"none"
+      }}
+    >
+      <Box 
+        style={{ 
+          minHeight: "50px", 
+          display: "flex", 
+          alignItems: "center", 
+          paddingLeft: "16px", 
+          borderBottom: "1px solid" 
+        }}
+      >
         <Typography>Date</Typography>
       </Box>
       <Box>
@@ -38,6 +54,43 @@ const TransactionsByDate = () => {
 }
 
 function TransactionsList({transactionObject}) {
+
+  let location = useLocation();
+  let params = new URLSearchParams(location.search);
+  let page = params.get("page"); // "instagram"  
+  page = parseInt(page) || 1;
+
+  function PaginationHandling({  }) {
+    return (
+     <div className="pagination-item"
+               style={{
+                  width: "100%",
+                   display: "flex",
+                   justifyContent: "center",
+                   marginTop: "20px",
+               }}>
+               <Pagination
+                   page={page}
+                   count={300}
+                   showFirstButton 
+                   showLastButton
+                   renderItem={(item) => (
+                       <PaginationItem
+                           style={{
+                               fontSize: "14px",
+                               color:"black",
+                           }}
+                           component={Link}
+                           to={`/transs?page=${item.page || 1}`}
+                           {...item}
+                           onClick={(e) => {
+                            console.log(e);}}
+                       />
+                   )}
+               />
+      </div>
+    )
+  }
     return (
       <div 
         style={{ 
@@ -73,11 +126,13 @@ function TransactionsList({transactionObject}) {
             </Container>
             <BackgroundList>
               <List>
-                <TransactionsByDate />
+                < TransactionsByDate />
+                < TransactionsByDate />
               </List>
             </BackgroundList>
           </Grid>
         </Box>
+        < PaginationHandling />
       </div>
     );
 }

@@ -1,0 +1,8 @@
+body{
+    background-color: #f6f6f6!important;
+  }
+
+.transactionByDate:last-child {
+    border-bottom-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}

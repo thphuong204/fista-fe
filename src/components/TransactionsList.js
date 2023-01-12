@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useLocation } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import { 
-  Box, 
+  Box,
+  Card, 
   Grid, 
   List, 
   Typography, 
@@ -15,6 +17,7 @@ import {
   TextField
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import {getTransactions} from '../features/transaction/transactionSlice'
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -98,7 +101,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function TransactionsByDate () {
+function TransactionsByDate ({date, transactionsArray}) {
   return (
       <div 
         className="transactionByDate"
@@ -119,22 +122,22 @@ function TransactionsByDate () {
             borderBottom: "1px solid #a0a0a0" 
           }}
         >
-          <Typography>Date</Typography>
+          <Typography>{date}</Typography>
         </Box>
         <Box>
-          {["date 1", "date 2", "date non 3", "date ytest thu cai 4"].map((value, i) => {
+          {transactionsArray.map((transObject, i) => {
             return (
               <Grid container spacing={2} style={{ width: "100%", margin:"0", padding: "2px 0"}}
-                key={value}
+                key={transObject._id}
               >
                   <Grid item xs={2}>
-                    {`Category ${value}`}
+                    {`${transObject.category}`}
                   </Grid > 
                   <Grid item xs={6}>
-                    {`Description ${value}`}
+                    {`${transObject.description}`}
                   </Grid>
                   <Grid item xs={4} style={{textAlign:"right"}}>
-                    {`Amount ${value}`}
+                    {`${transObject.amount}`}
                   </Grid>
               </Grid>
             );
@@ -144,12 +147,24 @@ function TransactionsByDate () {
   )
 }
 
-function TransactionsList({transactionObject}) {
+function TransactionsList() {
+
+  const [page, setPage] = useState(1);
+  const { 
+    transactionById, currentPageTransactions, transactionByDate, isLoading, totalTransactions 
+  } = useSelector(
+    (state) => state.transaction
+  );
+
+  console.log("transactionByDate", transactionByDate)
+
+  const dispatch = useDispatch();
+    useEffect (() => {
+      dispatch(getTransactions( {page}));
+    }, [])
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);
-    let page = params.get("page"); // "instagram"  
-    page = parseInt(page) || 1;
 
     function PaginationHandling({  }) {
       return (
@@ -198,100 +213,126 @@ function TransactionsList({transactionObject}) {
         margin: "60px 0px",
       }}
     >
-      <Container 
+      <Box 
+        sx={{ flexGrow: 1 }}
         style={{
+          display: "flex",
+          flexWrap: "wrap",
           margin: "0 0 50px 0",
           padding: "0"
         }}
       > 
-        <Container
-          style={{
-            width: "100%",
-            maxWidth: "350px",
-            display: "flex",
-            margin: "0 0 16px 0",
-            padding: "0"
-          }}
-        >
-          <WalletOptionBox/>
-        </Container>
-        <Container
-         sx={{
-          '& div': {
-            margin: "0"
-          }
-         }}
-          style={{
-            width: "100%",
-            maxWidth: "350px",
-            display: "flex",
-            margin: "0 0 16px 0",
-            padding: "0"
-          }}
-        >
-          <Search style={{width: "100%"}}>
-              <SearchIconWrapper>
-                <SearchIcon />
-              </SearchIconWrapper>
-              <StyledInputBase
-                placeholder="Search…"
-                inputProps={{ 'aria-label': 'search' }}
-              />
-          </Search>
-        </Container>
-        <Container
-          style={{
-            width: "100%",
-            maxWidth: "350px",
-            display: "flex",
-            justifyContent: "left",
-            margin: "0 0 16px 0",
-            padding: "0"
-          }}
-        >
-          <Button
-            style={{ 
-              width: "100%",
-              height: "48px",
-              justifyContent: "left",
-              padding: "0 12px",
-              textTransform: "capitalize",
-              textAlign: "left",
-              fontSize: "16px",
-              backgroundColor: "#fffaf0",
-              color: "#4c4c4c",
-              boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
+        <Grid container xs={12} md={6}>
+          <Grid
+            style={{
+              maxWidth: "350px",
+              display: "flex",
+              margin: "0 0 16px 0",
+              padding: "0"
             }}
           >
-            From Date: 01/01/2021
-          </Button>
-        </Container>
-        <Container
-          style={{
-            width: "100%",
-            maxWidth: "350px",
-            display: "flex",
-            margin: "0 0 16px 0",
-            padding: "0"
-          }}
-        >
-          <Button
-            style={{ 
-              width: "100%",
-              height: "48px",
-              justifyContent: "left",
-              padding: "0 12px",
-              textTransform: "capitalize",
-              fontSize: "16px",
-              backgroundColor: "#fffaf0",
-              color: "#4c4c4c",
-              boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
+            <Button style={{
+              backgroundColor: "#fffaf0"
+              }}
+            >
+              Filter
+            </Button>
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <Container
+              style={{
+                width: "100%",
+                maxWidth: "350px",
+                display: "flex",
+                margin: "0 0 16px 0",
+                padding: "0"
+              }}
+            >
+              <WalletOptionBox/>
+            </Container>
+            <Container
+            sx={{
+              '& div': {
+                margin: "0"
+              }
             }}
-          >
-            To Date: 31/12/2021
-          </Button>
-        </Container>
-      </Container>
+              style={{
+                width: "100%",
+                maxWidth: "350px",
+                display: "flex",
+                margin: "0 0 16px 0",
+                padding: "0"
+              }}
+            >
+              <Search style={{width: "100%"}}>
+                  <SearchIconWrapper>
+                    <SearchIcon />
+                  </SearchIconWrapper>
+                  <StyledInputBase
+                    placeholder="Search…"
+                    inputProps={{ 'aria-label': 'search' }}
+                  />
+              </Search>
+            </Container>
+            <Container
+              style={{
+                width: "100%",
+                maxWidth: "350px",
+                display: "flex",
+                justifyContent: "left",
+                margin: "0 0 16px 0",
+                padding: "0"
+              }}
+            >
+              <Button
+                style={{ 
+                  width: "100%",
+                  height: "48px",
+                  justifyContent: "left",
+                  padding: "0 12px",
+                  textTransform: "capitalize",
+                  textAlign: "left",
+                  fontSize: "16px",
+                  backgroundColor: "#fffaf0",
+                  color: "#4c4c4c",
+                  boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
+                }}
+              >
+                From Date: 01/01/2021
+              </Button>
+            </Container>
+            <Container
+              style={{
+                width: "100%",
+                maxWidth: "350px",
+                display: "flex",
+                margin: "0 0 16px 0",
+                padding: "0"
+              }}
+            >
+              <Button
+                style={{ 
+                  width: "100%",
+                  height: "48px",
+                  justifyContent: "left",
+                  padding: "0 12px",
+                  textTransform: "capitalize",
+                  fontSize: "16px",
+                  backgroundColor: "#fffaf0",
+                  color: "#4c4c4c",
+                  boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
+                }}
+              >
+                To Date: 31/12/2021
+              </Button>
+            </Container>
+          </Grid>
+        </Grid>
+
+        <Grid container xs={12} md={6}>
+        
+        </Grid>
+      </Box>
       <Box 
         sx={{ flexGrow: 1 }}
         style={{
@@ -319,16 +360,7 @@ function TransactionsList({transactionObject}) {
                   borderBottom: "2px solid #a0a0a0",
                 }}
               >
-                  <Button 
-                    style={{ 
-                      fontWeight: "bold",
-                      backgroundColor: "#ffde8a",
-                      color: "#4c4c4c"
-                    }}
-                  >
-                      LAST MONTH
-                  </Button>
-                  <Button 
+                  <Typography 
                     style={{ 
                       fontWeight: "bold",
                       backgroundColor: "#ffde8a",
@@ -336,16 +368,7 @@ function TransactionsList({transactionObject}) {
                     }}
                   >
                       THIS MONTH
-                  </Button>
-                  <Button 
-                    style={{ 
-                      fontWeight: "bold",
-                      backgroundColor: "#ffde8a",
-                      color: "#4c4c4c"
-                    }}
-                  >
-                      NEXT MONTH
-                  </Button>
+                  </Typography>
               </Container>
               <Container 
                 style={{ 
@@ -374,8 +397,14 @@ function TransactionsList({transactionObject}) {
             <List 
               style={{ padding: "0" }}
             >
-              < TransactionsByDate/>
-              < TransactionsByDate/>
+              {transactionByDate.map((trans, index) => {
+                return (
+                  < TransactionsByDate 
+                  key={index}
+                  date={trans[0]} transactionsArray= {trans[1]}
+                  />    
+                )
+              })}
             </List>
           </Grid>
         </BackgroundFirstLayer>

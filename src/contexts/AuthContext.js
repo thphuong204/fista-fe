@@ -65,7 +65,7 @@ const setSession = ( accessToken, userId ) => {
 
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const updatedProfile = useSelector((state)=> state.user.updatedProfile)
+  const { updatedProfile, currentUser } = useSelector((state)=> state.user)
 
   useEffect(() => {
     const initialize = async () => {
@@ -76,7 +76,7 @@ function AuthProvider({ children }) {
         if ( accessToken && userId && isValidToken(accessToken) ) {
             setSession(accessToken, userId);
   
-            const response = await apiService.get("/users/userId");
+            const response = await apiService.get(`/users/${userId}`);
             const user = response.data.items;
             console.log("user in initialize: ", user);
 
@@ -104,11 +104,14 @@ function AuthProvider({ children }) {
       }
     };
     initialize();
-  }, []);
+  }, [] );
 
   useEffect(() => {
-    if (updatedProfile)
-    dispatch({type:UPDATE_PROFILE,payload:updatedProfile});
+    if ( updatedProfile )
+    dispatch({
+      type: UPDATE_PROFILE,
+      payload: updatedProfile
+    });
   },[updatedProfile]);
 
 

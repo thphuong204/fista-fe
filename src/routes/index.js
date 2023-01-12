@@ -10,6 +10,7 @@ import LoginPage from "../pages/LoginPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import AuthRequire from "./AuthRequire";
 import WalletDetails from "../components/WalletDetails";
+import AccountPage from "../pages/AccountPage";
 
 function Router() {
   return (
@@ -28,6 +29,7 @@ function Router() {
         <Route path="wallets/:id" element={<WalletDetails />} />
         <Route path="categories/" element={<CategoryPage />} />
         <Route path="report/" element={<ReportPage />} />
+        <Route path="users/" element={<AccountPage />} />
       </Route>
 
       <Route element={<BlankLayout />}>

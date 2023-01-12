@@ -20,8 +20,8 @@ const reducer = (state, action) => {
       const { isAuthenticated, user } = action.payload;
       return {
         ...state,
-        isAuthenticated,
         isInitialized: true,
+        isAuthenticated,
         user,
       };
     case LOGIN_SUCCESS:
@@ -68,7 +68,7 @@ function AuthProvider({ children }) {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const accessToken = window.localStorage.getItem("username");
+        const accessToken = window.localStorage.getItem("accessToken");
 
         if ( accessToken && isValidToken(accessToken) ) {
             setSession(accessToken);
@@ -110,18 +110,15 @@ function AuthProvider({ children }) {
 
 
   const login = async ({email, password}, callback) => {
-
-    console.log("email", email)
-    console.log("password", password)
-
     const response = await apiService.post("/auth/login", { email, password });
     console.log("response in login", response)
     const {user, accessToken} = response.data;
 
+    console.log("user", user)
     setSession (accessToken);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: { user },
+      payload: { "user": user },
     });
     callback();
   };

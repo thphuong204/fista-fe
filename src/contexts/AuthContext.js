@@ -51,12 +51,14 @@ const reducer = (state, action) => {
 
 const AuthContext = createContext({ ...initialState });
 
-const setSession = (accessToken) => {
-  if(accessToken) {
-      window.localStorage.setItem('accessToken',accessToken);
+const setSession = ( accessToken, userId ) => {
+  if ( accessToken ) {
+      window.localStorage.setItem('accessToken', accessToken);
+      window.localStorage.setItem('userId', userId);
       apiService.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
   } else {
       window.localStorage.removeItem('accessToken');
+      window.localStorage.removeItem('userId');
       delete apiService.defaults.headers.common.Authorization;
   }
 };
@@ -69,11 +71,12 @@ function AuthProvider({ children }) {
     const initialize = async () => {
       try {
         const accessToken = window.localStorage.getItem("accessToken");
+        const userId = window.localStorage.getItem("userId");
 
-        if ( accessToken && isValidToken(accessToken) ) {
-            setSession(accessToken);
+        if ( accessToken && userId && isValidToken(accessToken) ) {
+            setSession(accessToken, userId);
   
-            const response = await apiService.get("/users");
+            const response = await apiService.get("/users/userId");
             const user = response.data.items;
             console.log("user in initialize: ", user);
 
@@ -113,12 +116,12 @@ function AuthProvider({ children }) {
     const response = await apiService.post("/auth/login", { email, password });
     console.log("response in login", response)
     const {user, accessToken} = response.data;
+    const userId = user._id;
 
-    console.log("user", user)
-    setSession (accessToken);
+    setSession (accessToken, userId);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: { "user": user },
+      payload: { user },
     });
     callback();
   };

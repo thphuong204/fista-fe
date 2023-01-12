@@ -1,4 +1,7 @@
 import { createContext, useReducer, useEffect } from "react";
+import { useSelector } from 'react-redux';
+import apiService from '../app/apiService';
+import {isValidToken} from '../utils/jwt';
 
 const initialState = {
   isAuthenticated: false,
@@ -9,6 +12,7 @@ const initialState = {
 const INITIALIZE = "INITIALIZE";
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGOUT = "LOGOUT";
+const UPDATE_PROFILE = "UPDATE_PROFILE";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -32,6 +36,14 @@ const reducer = (state, action) => {
         isAuthenticated: false,
         user: null,
       };
+      case UPDATE_PROFILE:
+        const {
+          name
+        } = action.payload;
+        return {...state,
+          user:{...state.user,
+            name
+          }}
     default:
       return state;
   }
@@ -39,20 +51,38 @@ const reducer = (state, action) => {
 
 const AuthContext = createContext({ ...initialState });
 
+const setSession = (accessToken) => {
+  if(accessToken) {
+      window.localStorage.setItem('accessToken',accessToken);
+      apiService.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
+  } else {
+      window.localStorage.removeItem('accessToken');
+      delete apiService.defaults.headers.common.Authorization;
+  }
+};
+
 function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
+  const updatedProfile = useSelector((state)=> state.user.updatedProfile)
 
   useEffect(() => {
     const initialize = async () => {
       try {
-        const username = window.localStorage.getItem("username");
+        const accessToken = window.localStorage.getItem("username");
 
-        if (username) {
+        if ( accessToken && isValidToken(accessToken) ) {
+            setSession(accessToken);
+  
+            const response = await apiService.get("/users");
+            const user = response.data.items;
+            console.log("user in initialize: ", user);
+
           dispatch({
             type: INITIALIZE,
-            payload: { isAuthenticated: true, user: { username } },
+            payload: { isAuthenticated: true, user },
           });
         } else {
+          setSession(null);
           dispatch({
             type: INITIALIZE,
             payload: { isAuthenticated: false, user: null },
@@ -60,6 +90,7 @@ function AuthProvider({ children }) {
         }
       } catch (err) {
         console.error(err);
+        setSession(null);
         dispatch({
           type: INITIALIZE,
           payload: {
@@ -72,17 +103,31 @@ function AuthProvider({ children }) {
     initialize();
   }, []);
 
-  const login = async (username, callback) => {
-    window.localStorage.setItem("username", username);
+  useEffect(() => {
+    if (updatedProfile)
+    dispatch({type:UPDATE_PROFILE,payload:updatedProfile});
+  },[updatedProfile]);
+
+
+  const login = async ({email, password}, callback) => {
+
+    console.log("email", email)
+    console.log("password", password)
+
+    const response = await apiService.post("/auth/login", { email, password });
+    console.log("response in login", response)
+    const {user, accessToken} = response.data;
+
+    setSession (accessToken);
     dispatch({
       type: LOGIN_SUCCESS,
-      payload: { user: { username } },
+      payload: { user },
     });
     callback();
   };
 
   const logout = async (callback) => {
-    window.localStorage.removeItem("username");
+    setSession(null);
     dispatch({ type: LOGOUT });
     callback();
   };

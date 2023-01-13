@@ -17,7 +17,8 @@ import {
   TextField
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-import {getTransactions} from '../features/transaction/transactionSlice'
+import {getTransactions} from './transactionSlice'
+import { TRANSACTIONS_PER_PAGE } from "../../app/config";
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -150,6 +151,8 @@ function TransactionsByDate ({date, transactionsArray}) {
 function TransactionsList() {
 
   const [page, setPage] = useState(1);
+  const [user] = useState("63bf72b6818c592241a1af58");
+  let limit = TRANSACTIONS_PER_PAGE 
   const { 
     transactionById, currentPageTransactions, transactionByDate, isLoading, totalTransactions 
   } = useSelector(
@@ -160,7 +163,7 @@ function TransactionsList() {
 
   const dispatch = useDispatch();
     useEffect (() => {
-      dispatch(getTransactions( {page}));
+      dispatch(getTransactions( user, page, limit ));
     }, [])
 
     let location = useLocation();

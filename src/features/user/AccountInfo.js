@@ -15,7 +15,7 @@ const UpdateUserSchema = yup.object().shape({
 
 function AccountInfo() {
   const { user } = useAuth();
-  const _id = user._id;
+  const _id = window.localStorage.getItem("userId")
   const {isLoading, currentUser } = useSelector((state) => state.user);
 
   const dispatch = useDispatch();

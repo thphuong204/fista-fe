@@ -1,17 +1,27 @@
 import React from 'react';
 import { styled } from '@mui/material/styles';
-import { Box, Grid, List, Typography, 
-  ListItem, IconButton, Avatar, ListItemAvatar, ListItemText } from '@mui/material';
+import { 
+  Box, 
+  Grid, 
+  List, 
+  Typography, 
+  ListItem, 
+  IconButton, 
+  Avatar, 
+  ListItemButton,
+  ListItemAvatar, 
+  ListItemText 
+} from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-const data = [1,2,3];
 
 const BackgroundList = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-function WalletsList({walletObject}) {
+
+function WalletsList({currentPageWallets, walletById , page, limit}) {
+
     return (
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
@@ -21,7 +31,7 @@ function WalletsList({walletObject}) {
           </Typography>
           <BackgroundList>
             <List>
-              {data.map((item) => {
+              {currentPageWallets.map((item) => {
                 return (
                 <ListItem
                   secondaryAction={
@@ -30,14 +40,16 @@ function WalletsList({walletObject}) {
                     </IconButton>
                   }
                 >
+                  <ListItemButton>
                   <ListItemAvatar>
                     <Avatar>
                       <FolderIcon />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={item}
+                    primary={walletById[item].name}
                   />
+                  </ListItemButton>
                 </ListItem>
               )})}
             </List>

@@ -45,32 +45,32 @@ const slice = createSlice({
     createWalletSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-      const newTransaction = action.payload;
+      const newWallet= action.payload;
       if (state.currentPageWallets.length % WALLETS_PER_PAGE === 0)
         state.currentPageWallets.pop();
-      state.walletById[newTransaction._id] = newTransaction;
-      state.currentPageWallets.unshift(newTransaction._id);
+      state.walletById[newWallet._id] = newWallet;
+      state.currentPageWallets.unshift(newWallet._id);
     },
 
     deleteWalletSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-      const { transactions, count } = action.payload;
-      transactions.forEach((transs) => {
-        state.walletById[transs._id] = transs;
-        if (!state.currentPageWallets.includes(transs._id))
-          state.currentPageWallets.push(transs._id);
+      const { wallets, total } = action.payload;
+      wallets.forEach((wallet) => {
+        state.walletById[wallet._id] = wallet;
+        if (!state.currentPageWallets.includes(wallet._id))
+          state.currentPageWallets.push(wallet._id);
       });
-      state.totalWallets = count;
+      state.totalWallets = total;
     },
 
     updateWalletSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-      const changedTransaction = action.payload;
+      const changedWallet = action.payload;
       if (state.currentPageWallets.length % WALLETS_PER_PAGE === 0)
-      state.walletById[changedTransaction._id].content = changedTransaction.content;
-      state.walletById[changedTransaction._id].image = changedTransaction.image;
+      state.walletById[changedWallet._id].content = changedWallet.content;
+      state.walletById[changedWallet._id].image = changedWallet.image;
     },
   },
 });
@@ -87,7 +87,7 @@ export const createWallet =
         "classification": classification,
       });
       dispatch(slice.actions.createWalletSuccess(response.data));
-      toast.success("Create transaction successfully");
+      toast.success("Create wallet successfully");
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
       toast.error(error.message);
@@ -119,7 +119,7 @@ export const getWallets =
 
       const params = { user, page, limit };
       await apiService.delete(`/wallets/${_id}`);
-      toast.success("Delete Transaction successful");
+      toast.success("Delete wallet successful");
 
       const response = await apiService.get(`/wallets`, {
         params,
@@ -144,9 +144,9 @@ export const getWallets =
         "amount": amount,
         "description": description
       });
-      console.log("change transaction,", response);
+      console.log("change wallet,", response);
       dispatch(slice.actions.updateWalletSuccess(response.data));
-      toast.success("Update transaction successfully");
+      toast.success("Update wallet successfully");
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
       toast.error(error.message);

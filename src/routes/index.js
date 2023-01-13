@@ -26,7 +26,7 @@ function Router() {
         <Route index element={<HomePage />} />
         <Route path="transs/" element={<HomePage />} />
         <Route path="wallets/" element={<WalletPage />} />
-        <Route path="wallets/:id" element={<WalletDetails />} />
+        <Route path="wallets/:_id" element={<WalletDetails />} />
         <Route path="categories/" element={<CategoryPage />} />
         <Route path="report/" element={<ReportPage />} />
         <Route path="users/" element={<AccountPage />} />

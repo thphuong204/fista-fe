@@ -49,6 +49,12 @@ function MainHeader() {
             <Link to='/categories'>
               <NavButton textInput={"Categories"}/>
             </Link>
+            <Link to='/transs'>
+              <NavButton textInput={"Transaction"}/>
+            </Link>
+            <Link to='/report'>
+              <NavButton textInput={"Report"}/>
+            </Link>
             <Link to='/users'>
               <NavButton textInput={"My Account"}/>
             </Link>

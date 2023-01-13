@@ -1,8 +1,24 @@
 import * as React from "react";
+import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
 import { Box, Toolbar, Typography, IconButton, Button } from "@mui/material";
 import Logo from "../components/Logo";
 import useAuth from "../hooks/useAuth";
+
+function NavButton( { textInput }) {
+  return (
+    <Button
+      style={{ 
+        margin:"0 10px",
+        fontWeight: "bold",
+        color: "#4c4c4c"
+      }} 
+    >
+      {textInput}
+    </Button>
+  );
+}
+
 
 function MainHeader() {
   const { user } = useAuth();
@@ -27,33 +43,15 @@ function MainHeader() {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Box>
-            <Button
-              style={{ 
-                margin:"0 10px",
-                fontWeight: "bold",
-                color: "#4c4c4c"
-              }}
-            >
-              My Wallet
-            </Button>
-            <Button
-              style={{ 
-                margin:"0 10px",
-                fontWeight: "bold",
-                color: "#4c4c4c"
-              }}
-            >
-              Categories
-            </Button>
-            <Button
-              style={{ 
-                margin:"0 10px",
-                fontWeight: "bold",
-                color: "#4c4c4c"
-              }}
-            >
-              My Account
-            </Button>
+            <Link to='/wallets'>
+              <NavButton textInput={"My Wallet"}/>
+            </Link>
+            <Link to='/categories'>
+              <NavButton textInput={"Categories"}/>
+            </Link>
+            <Link to='/users'>
+              <NavButton textInput={"My Account"}/>
+            </Link>
           </Box>
         </Toolbar>
       </AppBar>

@@ -31,9 +31,10 @@ function WalletsList({currentPageWallets, walletById , page, limit}) {
           </Typography>
           <BackgroundList>
             <List>
-              {currentPageWallets.map((item) => {
+              {currentPageWallets.map((item, index) => {
                 return (
                 <ListItem
+                  key={index}
                   secondaryAction={
                     <IconButton edge="end" aria-label="delete">
                       <DeleteIcon />

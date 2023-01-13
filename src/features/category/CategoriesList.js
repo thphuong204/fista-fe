@@ -18,7 +18,7 @@ const BackgroundList = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
 
-function CategoriesList({walletObject}) {
+function CategoriesList({categoryById, currentPageCategories, totalCategories}) {
     return (
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
@@ -28,16 +28,16 @@ function CategoriesList({walletObject}) {
           </Typography>
           <BackgroundList>
             <List>
-              {data.map((item) => {
+              {currentPageCategories.map((item, index) => {
                 return (
-                <ListItem>
+                <ListItem key={index}>
                   <ListItemAvatar>
                     <Avatar>
                       <FolderIcon />
                     </Avatar>
                   </ListItemAvatar>
                   <ListItemText
-                    primary={item}
+                    primary={categoryById[item]?.name || ""}
                   />
                 </ListItem>
               )})}

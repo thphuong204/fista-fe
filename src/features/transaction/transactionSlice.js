@@ -116,7 +116,6 @@ export const getTransactions = ( user, page, limit ) =>
     dispatch(slice.actions.startLoading());
     try {
       const params = {  user, page, limit };
-      console.log("params", params);
       const response = await apiService.get(`/transs`, {
         params,
       });

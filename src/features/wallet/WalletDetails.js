@@ -1,6 +1,6 @@
 import React from 'react';
 import {Card, CardContent,  Divider, Typography} from '@mui/material';
-import { FTextField } from './form';
+import { FTextField } from '../../components/form';
 import { useLocation } from "react-router-dom";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";

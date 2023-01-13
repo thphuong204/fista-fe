@@ -1,6 +1,6 @@
 import React from "react";
 import { Container } from "@mui/material";
-import WalletsList from '../components/WalletsList';
+import WalletsList from '../features/wallet/WalletsList';
 import { Outlet } from "react-router-dom";
 
 function WalletPage() {

@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from 'react-router-dom';
-import { styled, alpha } from '@mui/material/styles';
+import { styled } from '@mui/material/styles';
 import { 
   Box,
   Grid, 
   List, 
   Typography, 
   Container, 
-  InputBase,  
-  Button, 
   Autocomplete,
   TextField
 } from '@mui/material';
-import SearchIcon from '@mui/icons-material/Search';
 import {getTransactions} from './transactionSlice'
 import { TRANSACTIONS_PER_PAGE } from "../../app/config";
 import PaginationHandling from "../../components/PaginationHandling";
+import FilterList from './FilterList';
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -63,42 +61,6 @@ function WalletOptionBox() {
     />
   );
 }
-
-const Search = styled('div')(({ theme }) => ({
-  position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.primary.darker,
-  boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)",
-  '&:hover': {
-    backgroundColor: alpha(theme.palette.primary.darker, 0.85),
-  },
-  marginLeft: 0,
-  width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(1),
-    width: '160px',
-  },
-}));
-
-const SearchIconWrapper = styled('div')(({ theme }) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
-
-const StyledInputBase = styled(InputBase)(({ theme }) => ({
-  color: 'inherit',
-  '& .MuiInputBase-input': {
-    minHeight: '48px',
-    padding: '0',
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-  },
-}));
 
 function TransactionsByDate ({date, transactionsArray}) {
   return (
@@ -187,110 +149,7 @@ function TransactionsList() {
         }}
       > 
         <Grid container xs={12} md={6}>
-          <Grid
-            style={{
-              maxWidth: "350px",
-              display: "flex",
-              margin: "0 0 16px 0",
-              padding: "0"
-            }}
-          >
-            <Button style={{
-              backgroundColor: "#fffaf0"
-              }}
-            >
-              Filter
-            </Button>
-          </Grid>
-          <Grid item xs={12} md={6}>
-            <Container
-              style={{
-                width: "100%",
-                maxWidth: "350px",
-                display: "flex",
-                margin: "0 0 16px 0",
-                padding: "0"
-              }}
-            >
-              <WalletOptionBox/>
-            </Container>
-            <Container
-            sx={{
-              '& div': {
-                margin: "0"
-              }
-            }}
-              style={{
-                width: "100%",
-                maxWidth: "350px",
-                display: "flex",
-                margin: "0 0 16px 0",
-                padding: "0"
-              }}
-            >
-              <Search style={{width: "100%"}}>
-                  <SearchIconWrapper>
-                    <SearchIcon />
-                  </SearchIconWrapper>
-                  <StyledInputBase
-                    placeholder="Search…"
-                    inputProps={{ 'aria-label': 'search' }}
-                  />
-              </Search>
-            </Container>
-            <Container
-              style={{
-                width: "100%",
-                maxWidth: "350px",
-                display: "flex",
-                justifyContent: "left",
-                margin: "0 0 16px 0",
-                padding: "0"
-              }}
-            >
-              <Button
-                style={{ 
-                  width: "100%",
-                  height: "48px",
-                  justifyContent: "left",
-                  padding: "0 12px",
-                  textTransform: "capitalize",
-                  textAlign: "left",
-                  fontSize: "16px",
-                  backgroundColor: "#fffaf0",
-                  color: "#4c4c4c",
-                  boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
-                }}
-              >
-                From Date: 01/01/2021
-              </Button>
-            </Container>
-            <Container
-              style={{
-                width: "100%",
-                maxWidth: "350px",
-                display: "flex",
-                margin: "0 0 16px 0",
-                padding: "0"
-              }}
-            >
-              <Button
-                style={{ 
-                  width: "100%",
-                  height: "48px",
-                  justifyContent: "left",
-                  padding: "0 12px",
-                  textTransform: "capitalize",
-                  fontSize: "16px",
-                  backgroundColor: "#fffaf0",
-                  color: "#4c4c4c",
-                  boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
-                }}
-              >
-                To Date: 31/12/2021
-              </Button>
-            </Container>
-          </Grid>
+          <FilterList WalletOptionBox={WalletOptionBox}/>
         </Grid>
 
         <Grid container xs={12} md={6}>
@@ -364,8 +223,9 @@ function TransactionsList() {
               {transactionByDate.map((trans, index) => {
                 return (
                   < TransactionsByDate 
-                  key={index}
-                  date={trans[0]} transactionsArray= {trans[1]}
+                    key={index}
+                    date={trans[0]} 
+                    transactionsArray= {trans[1]}
                   />    
                 )
               })}

@@ -7,6 +7,7 @@ import {
     InputBase, 
   } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import DatePicker from 'react-date-picker';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -45,6 +46,9 @@ color: 'inherit',
 }));
 
 function FilterList ( { WalletOptionBox }) {
+    const [valueFirst, onChangeFirst] = useState(new Date());
+    const [valueSecond, onChangeSecond] = useState(new Date());
+
      return (
         <>
             <Grid
@@ -122,7 +126,8 @@ function FilterList ( { WalletOptionBox }) {
                   boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
                 }}
               >
-                From Date: 01/01/2021
+                From Date: 
+                <DatePicker onChange={onChangeFirst} value={valueFirst} />
               </Button>
             </Container>
             <Container
@@ -147,7 +152,8 @@ function FilterList ( { WalletOptionBox }) {
                   boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
                 }}
               >
-                To Date: 31/12/2021
+                To Date:
+                <DatePicker onChange={onChangeSecond} value={valueSecond} />
               </Button>
             </Container>
           </Grid>

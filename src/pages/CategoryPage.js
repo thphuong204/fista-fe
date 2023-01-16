@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Container } from "@mui/material";
-import CategoriesList from '../features/category/CategoriesList';
+import CategoriesList from "../features/category/CategoriesList";
+import PaginationHandling from "../components/PaginationHandling";
 import { Outlet } from "react-router-dom";
 import { CATEGORIES_PER_PAGE } from "../app/config";
-import {getCategories} from '../features/category/categorySlice'
+import {getCategories} from "../features/category/categorySlice";
 
 function CategoryPage() {
   const [page, setPage] = useState(1);
@@ -31,6 +32,7 @@ function CategoryPage() {
       >
         <Outlet/>
       </CategoriesList>
+      <PaginationHandling page={"1"} totalPages={"10"} toRoute={"categories"} />
     </Container>
   );
 }

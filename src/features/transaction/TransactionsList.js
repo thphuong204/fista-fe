@@ -1,24 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { styled, alpha } from '@mui/material/styles';
 import { 
   Box,
-  Card, 
   Grid, 
   List, 
   Typography, 
   Container, 
   InputBase,  
   Button, 
-  Pagination, 
-  PaginationItem, 
   Autocomplete,
   TextField
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import {getTransactions} from './transactionSlice'
 import { TRANSACTIONS_PER_PAGE } from "../../app/config";
+import PaginationHandling from "../../components/PaginationHandling";
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -168,43 +166,6 @@ function TransactionsList() {
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);
-
-    function PaginationHandling({  }) {
-      return (
-      <div className="pagination-item"
-                  style={{
-                    minWidth: "50%",
-                    minHeight: "50px",
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    borderRadius: "10px",
-                    marginTop: "60px",
-                    backgroundColor: "#fffaf0",
-                    boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)"
-                  }}>
-                <Pagination
-                    page={page}
-                    count={300}
-                    showFirstButton 
-                    showLastButton
-                    renderItem={(item) => (
-                        <PaginationItem
-                            style={{
-                                fontSize: "14px",
-                                color: "#4c4c4c"
-                            }}
-                            component={Link}
-                            to={`/transs?page=${item.page || 1}`}
-                            {...item}
-                            onClick={(e) => {
-                              console.log(e);}}
-                        />
-                    )}
-                />
-        </div>
-      )
-    }
 
   return (
     <div 
@@ -412,7 +373,7 @@ function TransactionsList() {
           </Grid>
         </BackgroundFirstLayer>
       </Box>
-      < PaginationHandling />
+      < PaginationHandling page={page} totalPages={"100"} toRoute={"transs"} />
     </div>
   );
 }

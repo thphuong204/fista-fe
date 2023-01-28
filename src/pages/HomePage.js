@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Box, Container, Stack } from "@mui/material";
 import LoadingScreen from "../components/LoadingScreen";
-import TransactionsList from "../features/transaction/TransactionsList"
+import { TransactionsList } from "../features/transaction/TransactionsList"
 
 function HomePage() {
   const [loading, setLoading] = useState(true);

@@ -70,7 +70,7 @@ function AutoCompleteList ({ children, sourceArray }) {
     )
 }
 
-function AddTransactionButton () {
+function AddTransactionAccordion () {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [ isLoading ] = React.useState(false);
 
@@ -147,4 +147,4 @@ function AddTransactionButton () {
 }
 
 
-export { AddTransactionButton } 
+export { AddTransactionAccordion } 

@@ -7,3 +7,18 @@ body{
     border-bottom-right-radius: 10px;
     border-bottom-left-radius: 10px;
 }
+
+.react-date-picker {
+  height: 48px;
+}
+
+.react-date-picker__inputGroup {
+  text-align: right;
+}
+
+.react-date-picker__wrapper {
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-size: 14px;
+}

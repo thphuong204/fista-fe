@@ -14,7 +14,8 @@ import {
 import {getTransactions} from './transactionSlice'
 import { TRANSACTIONS_PER_PAGE } from "../../app/config";
 import PaginationHandling from "../../components/PaginationHandling";
-import FilterList from './FilterList';
+import { FilterList } from "./FilterList";
+import { AddTransactionAccordion } from "./AddTransaction";
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -43,13 +44,16 @@ function WalletOptionBox() {
       sx={{ 
         width: "100%",
         '& .MuiFilledInput-root': {
-          backgroundColor: "#fffaf0",
+          backgroundColor: "#fff",
           boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)",
           color: "#4c4c4c"
         }, 
         '& .MuiFormLabel-root': {
           color: "#4c4c4c"
         },
+      }}
+      style={{
+        height: "32px"
       }}
       renderInput={(params) => (
         <TextField 
@@ -148,12 +152,11 @@ function TransactionsList() {
           padding: "0"
         }}
       > 
-        <Grid container xs={12} md={6}>
-          <FilterList WalletOptionBox={WalletOptionBox}/>
+        <Grid container item xs={12} md={12} style={{ justifyContent: "center" , alignContent: "center" }}>
+          <AddTransactionAccordion/>
         </Grid>
-
-        <Grid container xs={12} md={6}>
-        
+        <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>
+          <FilterList WalletOptionBox={WalletOptionBox}/>
         </Grid>
       </Box>
       <Box 
@@ -233,9 +236,9 @@ function TransactionsList() {
           </Grid>
         </BackgroundFirstLayer>
       </Box>
-      < PaginationHandling page={page} totalPages={"100"} toRoute={"transs"} />
+      < PaginationHandling page={page} totalPages={100} toRoute={"transs"} />
     </div>
   );
 }
 
-export default TransactionsList
+export { TransactionsList, WalletOptionBox }

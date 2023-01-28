@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { Box, Container, Stack } from "@mui/material";
+import { Box, Container, Stack, Grid } from "@mui/material";
 import LoadingScreen from "../components/LoadingScreen";
+import { FilterList } from "../features/transaction/FilterList";
+import { WalletOptionBox } from "../features/transaction/TransactionsList";
 
 function ReportPage() {
   const [loading, setLoading] = useState(true);
@@ -19,8 +21,9 @@ function ReportPage() {
             <LoadingScreen />
           ) : (
             <>
-              <Stack>
-              </Stack>
+              <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>
+                <FilterList WalletOptionBox={WalletOptionBox}/>
+              </Grid>
             </>
           )}
         </Box>

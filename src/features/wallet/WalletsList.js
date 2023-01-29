@@ -3,14 +3,13 @@ import { styled } from '@mui/material/styles';
 import { 
   Box, 
   Grid, 
-  List, 
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
   Typography, 
-  ListItem, 
   IconButton, 
-  Avatar, 
-  ListItemButton,
-  ListItemAvatar, 
-  ListItemText 
 } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -18,7 +17,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 const BackgroundList = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
 }));
-
 
 function WalletsList({currentPageWallets, walletById , page, limit}) {
 
@@ -30,30 +28,42 @@ function WalletsList({currentPageWallets, walletById , page, limit}) {
             Wallets
           </Typography>
           <BackgroundList>
-            <List>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell></TableCell>
+                  <TableCell style={{fontWeight:"bold"}}>Name</TableCell>
+                  <TableCell style={{fontWeight:"bold"}}>Type</TableCell>
+                  <TableCell style={{fontWeight:"bold"}}>Delete</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
               {currentPageWallets.map((item, index) => {
                 return (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton edge="end" aria-label="delete">
-                      <DeleteIcon />
-                    </IconButton>
-                  }
-                >
-                  <ListItemButton>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <FolderIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={walletById[item].name}
-                  />
-                  </ListItemButton>
-                </ListItem>
+                  <TableRow
+                      key={index}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                  >
+                    <TableCell>
+                      <IconButton edge="end" aria-label="delete">
+                        <FolderIcon />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell component="th" scope="row">
+                      {walletById[item]?.name}
+                    </TableCell>
+                    <TableCell>
+                      {walletById[item]?.classification}
+                    </TableCell>
+                    <TableCell>
+                      <IconButton edge="end" aria-label="delete">
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
               )})}
-            </List>
+              </TableBody>
+            </Table>
           </BackgroundList>
         </Grid>
         </Box>

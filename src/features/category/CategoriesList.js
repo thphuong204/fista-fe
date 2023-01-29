@@ -3,16 +3,14 @@ import { styled } from '@mui/material/styles';
 import { 
   Box, 
   Grid, 
-  List, 
-  Typography, 
-  ListItem, 
-  Avatar, 
-  ListItemAvatar, 
-  ListItemText 
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Typography
 } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
-
-const data = [1,2,3];
 
 const BackgroundList = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -27,21 +25,30 @@ function CategoriesList({categoryById, currentPageCategories, totalCategories}) 
             Categories
           </Typography>
           <BackgroundList>
-            <List>
-              {currentPageCategories.map((item, index) => {
-                return (
-                <ListItem key={index}>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <FolderIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                  <ListItemText
-                    primary={categoryById[item]?.name || ""}
-                  />
-                </ListItem>
-              )})}
-            </List>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell style={{fontWeight:"bold"}}>Name</TableCell>
+                  <TableCell style={{fontWeight:"bold"}}>Type</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {currentPageCategories.map((item, index) => {
+                  return (
+                    <TableRow
+                      key={index}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {categoryById[item]?.name}
+                      </TableCell>
+                      <TableCell>
+                        {categoryById[item]?.classification}
+                      </TableCell>
+                    </TableRow>
+                )})}
+              </TableBody>
+            </Table>
           </BackgroundList>
         </Grid>
         </Box>

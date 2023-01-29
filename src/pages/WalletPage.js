@@ -1,28 +1,43 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Container } from "@mui/material";
-import WalletsList from '../features/wallet/WalletsList';
 import { Outlet } from "react-router-dom";
+import { Container } from "@mui/material";
 import { WALLETS_PER_PAGE } from "../app/config";
 import {getWallets} from '../features/wallet/walletSlice'
+import WalletsList from '../features/wallet/WalletsList';
+import PaginationHandling from "../components/PaginationHandling";
 
 function WalletPage() {
   const [page, setPage] = useState(1);
   const [user] = useState("63bf72b6818c592241a1af58");
   let limit = WALLETS_PER_PAGE 
+
   const { 
-    walletById, currentPageWallets, isLoading, totalWallets
+    walletById, currentPageWallets, isLoading, totalWallets, totalPages
   } = useSelector(
     (state) => state.wallet
   );
 
+  const handllePageChange = (newpage) => {
+    setPage(newpage)
+  }
+
   const dispatch = useDispatch();
     useEffect (() => {
       dispatch(getWallets( user, page, limit ));
-  }, [])
+  }, [page, limit])
 
   return (
-    <Container sx={{ display: "flex", minHeight: "100vh", mt: 3 }}>
+    <Container 
+      sx={{ 
+        display: "flex", 
+        flexWrap: "wrap", 
+        justifyContent: "center", 
+        minHeight: "100vh", 
+        mt: 3, 
+        mb: "50px" 
+      }}
+    >
       <WalletsList 
         currentPageWallets={currentPageWallets} 
         walletById={walletById} 
@@ -31,6 +46,12 @@ function WalletPage() {
       >
         <Outlet/>
       </WalletsList>
+      <PaginationHandling 
+        page={1} 
+        totalPages={totalPages} 
+        toRoute={"wallets"}  
+        handllePageChange={handllePageChange}
+      />
     </Container>
   );
 }

@@ -11,20 +11,33 @@ function CategoryPage() {
   const [page, setPage] = useState(1);
   const [user] = useState("63bf72b6818c592241a1af58");
   let limit = CATEGORIES_PER_PAGE ;
-
+  
   const { 
-    categoryById, currentPageCategories, isLoading, totalCategories
+    categoryById, currentPageCategories, isLoading, totalCategories, totalPages
   } = useSelector(
     (state) => state.category
   );
 
+  const handllePageChange = (newpage) => {
+    setPage(newpage)
+  };
+
   const dispatch = useDispatch();
     useEffect (() => {
       dispatch(getCategories( user, page, limit ));
-  }, [])
+  }, [page, limit]);
 
   return (
-    <Container sx={{ display: "flex", minHeight: "100vh", mt: 3 }}>
+    <Container 
+      sx={{ 
+        display: "flex", 
+        flexWrap: "wrap", 
+        justifyContent: "center", 
+        minHeight: "100vh", 
+        mt: 3, 
+        mb: "50px" 
+      }}
+    >
       <CategoriesList 
         categoryById={categoryById} 
         currentPageCategories={currentPageCategories}
@@ -32,7 +45,12 @@ function CategoryPage() {
       >
         <Outlet/>
       </CategoriesList>
-      <PaginationHandling page={"1"} totalPages={"10"} toRoute={"categories"} />
+      <PaginationHandling 
+        page={page} 
+        totalPages={totalPages} 
+        toRoute={"categories"}  
+        handllePageChange={handllePageChange}
+      />
     </Container>
   );
 }

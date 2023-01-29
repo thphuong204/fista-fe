@@ -118,17 +118,25 @@ function TransactionsList() {
   const [user] = useState("63bf72b6818c592241a1af58");
   let limit = TRANSACTIONS_PER_PAGE 
   const { 
-    transactionById, currentPageTransactions, transactionByDate, isLoading, totalTransactions 
+    transactionById, 
+    currentPageTransactions, 
+    transactionByDate, 
+    isLoading, 
+    totalTransactions,
+    totalPages
   } = useSelector(
     (state) => state.transaction
   );
 
   console.log("transactionByDate", transactionByDate)
+  const handllePageChange = (newpage) => {
+    setPage(newpage)
+  }
 
   const dispatch = useDispatch();
     useEffect (() => {
       dispatch(getTransactions( user, page, limit ));
-    }, [])
+  }, [page, limit])
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);
@@ -236,7 +244,12 @@ function TransactionsList() {
           </Grid>
         </BackgroundFirstLayer>
       </Box>
-      < PaginationHandling page={page} totalPages={100} toRoute={"transs"} />
+      < PaginationHandling 
+        page={page} 
+        totalPages={totalPages} 
+        toRoute={"transs"} 
+        handllePageChange={handllePageChange}
+      />
     </div>
   );
 }

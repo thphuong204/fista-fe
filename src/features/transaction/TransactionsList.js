@@ -11,11 +11,12 @@ import {
   Autocomplete,
   TextField
 } from '@mui/material';
-import {getTransactions} from './transactionSlice'
+import {getTransactions} from './transactionSlice';
 import { TRANSACTIONS_PER_PAGE } from "../../app/config";
 import PaginationHandling from "../../components/PaginationHandling";
 import { FilterList } from "./FilterList";
 import { AddTransactionAccordion } from "./AddTransaction";
+import { fNumber } from '../../utils/formatNumber';
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -102,7 +103,7 @@ function TransactionsByDate ({date, transactionsArray}) {
                     {`${transObject.description}`}
                   </Grid>
                   <Grid item xs={4} style={{textAlign:"right"}}>
-                    {`${transObject.amount}`}
+                    {fNumber(transObject.amount)}
                   </Grid>
               </Grid>
             );
@@ -217,13 +218,13 @@ function TransactionsList() {
                       <Typography>Inflow</Typography>
                     </Grid>
                     <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
-                      <Typography>Amount1</Typography>
+                      <Typography>{fNumber(50000000)}</Typography>
                     </Grid>
                     <Grid item xs={6} md={4}>
                       <Typography>Outflow</Typography>
                     </Grid>
                     <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
-                      <Typography>Amount2</Typography>
+                      <Typography>{fNumber(-10000000)}</Typography>
                     </Grid>
                   </Grid>
               </Container>

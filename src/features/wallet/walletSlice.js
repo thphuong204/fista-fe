@@ -40,6 +40,7 @@ const slice = createSlice({
       });
 
       state.totalWallets = total;
+      state.totalPages = Math.ceil(total/WALLETS_PER_PAGE);
     },
 
     createWalletSuccess(state, action) {
@@ -103,7 +104,7 @@ export const getWallets =
       const response = await apiService.get(`/wallets`, {
         params,
       });
-      if (page === 1) dispatch(slice.actions.resetWallets());
+      dispatch(slice.actions.resetWallets());
       dispatch(slice.actions.getWalletsSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));

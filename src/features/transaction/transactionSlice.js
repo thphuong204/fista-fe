@@ -53,6 +53,7 @@ const slice = createSlice({
       const tmpGroup = Object.entries(groupBy(items, "date"));
       state.transactionByDate = tmpGroup;
       state.totalTransactions = total;
+      state.totalPages = Math.ceil(total/TRANSACTIONS_PER_PAGE);
     },
 
     createTransactionSuccess(state, action) {

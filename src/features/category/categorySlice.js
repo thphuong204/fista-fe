@@ -40,6 +40,7 @@ const slice = createSlice({
       });
 
       state.totalCategories = total;
+      state.totalPages = Math.ceil(total/CATEGORIES_PER_PAGE);
     },
 
     createCategorySuccess(state, action) {
@@ -104,7 +105,7 @@ export const getCategories =
       const response = await apiService.get(`/categories`, {
         params,
       });
-      if (page === 1) dispatch(slice.actions.resetCategories());
+      dispatch(slice.actions.resetCategories());
       dispatch(slice.actions.getCategoriesSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));

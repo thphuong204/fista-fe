@@ -26,8 +26,8 @@ function WalletsList({currentPageWallets, walletById , page, limit}) {
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <Box sx={{ flexGrow: 1, maxWidth: 752 }}>
             <Grid item xs={12} md={6}>
-          <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div">
-            Wallets with name and icon
+          <Typography sx={{ mt: 4, mb: 2 }} variant="h6" component="div" style={{ fontWeight: "600" }}>
+            Wallets
           </Typography>
           <BackgroundList>
             <List>

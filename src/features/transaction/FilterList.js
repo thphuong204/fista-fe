@@ -18,7 +18,7 @@ import { SmallButton } from '../../components/CustomizedButton';
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
     borderRadius: theme.shape.borderRadius,
-    backgroundColor: theme.palette.primary.darker,
+    backgroundColor: "#fff",
     boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)",
     '&:hover': {
       backgroundColor: alpha(theme.palette.primary.darker, 0.85),

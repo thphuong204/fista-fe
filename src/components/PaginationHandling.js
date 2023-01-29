@@ -5,7 +5,7 @@ import {
 import { Link } from 'react-router-dom';
 
 // Pagination Router integration
-function PaginationHandling({ page = 1, totalPages = 1, toRoute = "transs" }) {
+function PaginationHandling({ page = 1, handllePageChange, totalPages = 1, toRoute = "transs" }) {
     return (
     <div className="pagination-item"
                 style={{
@@ -24,17 +24,17 @@ function PaginationHandling({ page = 1, totalPages = 1, toRoute = "transs" }) {
                   count={totalPages}
                   showFirstButton 
                   showLastButton
+                  color="info"
                   renderItem={(item) => (
                       <PaginationItem
                           style={{
                               fontSize: "14px",
-                              color: "#4c4c4c"
                           }}
+                          
                           component={Link}
                           to={`/${toRoute}?page=${item.page || 1}`}
                           {...item}
-                          onClick={(e) => {
-                            console.log(e);}}
+                          onClick={(e) => handllePageChange(parseInt(e.target.innerText))}
                       />
                   )}
               />

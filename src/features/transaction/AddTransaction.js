@@ -19,6 +19,12 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectingContainer } from "./FilterList";
 import { SmallButton } from '../../components/CustomizedButton';
 
+const typeArray = [
+    'Expense',
+    'Income',
+    'Transfer',
+]
+
 const CreateTransSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
 });
@@ -35,31 +41,13 @@ const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
     },
 }));
 
-const typeArray = [
-    { label: 'Expense'},
-    { label: 'Income'},
-    { label: 'Transfer'},
-]
-
-const walletArray =[
-    { label: 'Expense'},
-    { label: 'Income'},
-    { label: 'Transfer'},
-]
-
-const categoryArray = [
-    { label: 'Expense'},
-    { label: 'Income'},
-    { label: 'Transfer'},
-]
-
-function AutoCompleteList ({ children, sourceArray }) {
+function AutoCompleteList ({ id, children, sourceArray }) {
     return (
         <Autocomplete
             size="small"
             disablePortal
-            id={children}
-            options={sourceArray}
+            id={id}
+            options={sourceArray.map((option)=> option.name)}
             renderInput={(params) => <TextField {...params} label={children} />}
             style={{
                 width: "100%",
@@ -70,7 +58,7 @@ function AutoCompleteList ({ children, sourceArray }) {
     )
 }
 
-function AddTransactionAccordion () {
+function AddTransactionAccordion ({walletById, currentPageWallets, categoryById, currentPageCategories}) {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [ isLoading ] = React.useState(false);
 
@@ -97,7 +85,20 @@ function AddTransactionAccordion () {
     const onSubmit = (data) => {
     console.log("a")
     };
-
+    
+    const walletArray =[];
+    currentPageWallets.forEach((id) => {
+        walletArray.push(
+           walletById[id]
+        )
+    })
+    
+    const categoryArray = []
+    currentPageCategories.forEach((id) => {
+        categoryArray.push(
+            categoryById[id]
+        )
+    })
     return (
         <div style={{
                 width:"100%",
@@ -120,9 +121,19 @@ function AddTransactionAccordion () {
                             <form onSubmit={methods.handleSubmit(onSubmit)} style={{width: "100%"}}>
                                 <Grid container style={{ margin: "0" }}>
                                     <Card sx={{ display: "grid", width:"100%", p: 1, rowGap: 2 }}>
-                                            <AutoCompleteList children={"Type"} sourceArray={typeArray}/>
-                                            <AutoCompleteList children={"Wallet"} sourceArray={walletArray}/>
-                                            <AutoCompleteList children={"Category"} sourceArray={categoryArray}/>
+                                            <AutoCompleteList 
+                                                children={"Type"} 
+                                                sourceArray={typeArray}
+                                            />
+                                            <AutoCompleteList 
+                                                id={"wallet"}
+                                                children={"Wallet"}
+                                                sourceArray={walletArray}
+                                            />
+                                            <AutoCompleteList 
+                                                children={"Category"} 
+                                                sourceArray={categoryArray}
+                                            />
                                             <SmallTextField name="description" label="Description"/>
                                             <Grid container item xs={12}
                                                 style={{ flexWrap: "noWrap", gap: "0 8px"}}

@@ -12,6 +12,8 @@ import {
   TextField
 } from '@mui/material';
 import {getTransactions} from './transactionSlice';
+import {getWallets} from '../wallet/walletSlice';
+import {getCategories} from '../category/categorySlice';
 import { TRANSACTIONS_PER_PAGE } from "../../app/config";
 import PaginationHandling from "../../components/PaginationHandling";
 import { FilterList } from "./FilterList";
@@ -119,14 +121,25 @@ function TransactionsList() {
   const [user] = useState("63bf72b6818c592241a1af58");
   let limit = TRANSACTIONS_PER_PAGE 
   const { 
-    transactionById, 
-    currentPageTransactions, 
     transactionByDate, 
     isLoading, 
-    totalTransactions,
     totalPages
   } = useSelector(
     (state) => state.transaction
+  );
+
+  const { 
+    walletById, 
+    currentPageWallets
+  } = useSelector(
+    (state) => state.wallet
+  );
+
+  const { 
+    categoryById, 
+    currentPageCategories
+  } = useSelector(
+    (state) => state.category
   );
 
   console.log("transactionByDate", transactionByDate)
@@ -135,9 +148,15 @@ function TransactionsList() {
   }
 
   const dispatch = useDispatch();
-    useEffect (() => {
+    
+  useEffect (() => {
       dispatch(getTransactions( user, page, limit ));
   }, [page, limit])
+
+  useEffect (() => {
+    dispatch(getWallets( user, page, "all" ));
+    dispatch(getCategories( user, page, "all" ));
+  }, [])
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);
@@ -162,7 +181,12 @@ function TransactionsList() {
         }}
       > 
         <Grid container item xs={12} md={12} style={{ justifyContent: "center" , alignContent: "center" }}>
-          <AddTransactionAccordion/>
+          <AddTransactionAccordion 
+            walletById={walletById}
+            currentPageWallets={currentPageWallets}
+            categoryById={categoryById}
+            currentPageCategories={currentPageCategories}
+          />
         </Grid>
         <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>
           <FilterList WalletOptionBox={WalletOptionBox}/>

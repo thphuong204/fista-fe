@@ -20,9 +20,9 @@ import { SelectingContainer } from "./FilterList";
 import { SmallButton } from '../../components/CustomizedButton';
 
 const typeArray = [
-    'Expense',
-    'Income',
-    'Transfer',
+    {name: 'Expense'},
+    {name: 'Income'},
+    {name: 'Transfer'},
 ]
 
 const CreateTransSchema = yup.object().shape({

@@ -142,7 +142,6 @@ function TransactionsList() {
     (state) => state.category
   );
 
-  console.log("transactionByDate", transactionByDate)
   const handllePageChange = (newpage) => {
     setPage(newpage)
   }

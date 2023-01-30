@@ -162,7 +162,6 @@ export const getTransactions = ( user, page, limit ) =>
         "amount": amount,
         "description": description
       });
-      console.log("change transaction,", response);
       dispatch(slice.actions.updateTransactionSuccess(response.data));
       toast.success("Update transaction successfully");
     } catch (error) {

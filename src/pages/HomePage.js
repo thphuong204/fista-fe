@@ -7,7 +7,6 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  console.log("loading", loading)
   useEffect(()=> {
     setLoading(false)
   },[])

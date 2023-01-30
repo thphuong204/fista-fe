@@ -100,7 +100,6 @@ export const getCategories =
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      console.log("get categories")
       const params = { page, limit };
       const response = await apiService.get(`/categories`, {
         params,
@@ -143,7 +142,6 @@ export const getCategories =
         "name": name,
         "classification": classification
       });
-      console.log("change category,", response);
       dispatch(slice.actions.updateCategorySuccess(response.data));
       toast.success("Update category successfully");
     } catch (error) {

@@ -42,7 +42,7 @@ const slice = createSlice({
       state.totalWallets = total;
       state.totalPages = Math.ceil(total/WALLETS_PER_PAGE);
     },
-
+    
     createWalletSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
@@ -79,38 +79,38 @@ const slice = createSlice({
 export default slice.reducer;
 
 export const createWallet =
-  ({ wallet, classification }) =>
-  async (dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const response = await apiService.post("/wallets", {
-        "name": wallet,
-        "classification": classification,
-      });
-      dispatch(slice.actions.createWalletSuccess(response.data));
-      toast.success("Create wallet successfully");
-    } catch (error) {
-      dispatch(slice.actions.hasError(error.message));
-      toast.error(error.message);
-    }
-  };
+({ wallet, classification }) =>
+async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const response = await apiService.post("/wallets", {
+      "name": wallet,
+      "classification": classification,
+    });
+    dispatch(slice.actions.createWalletSuccess(response.data));
+    toast.success("Create wallet successfully");
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
+  }
+};
 
 export const getWallets =
-  ( user, page, limit ) =>
-  async (dispatch) => {
-    dispatch(slice.actions.startLoading());
-    try {
-      const params = { user, page, limit };
-      const response = await apiService.get(`/wallets`, {
-        params,
-      });
-      dispatch(slice.actions.resetWallets());
-      dispatch(slice.actions.getWalletsSuccess(response.data));
-    } catch (error) {
-      dispatch(slice.actions.hasError(error.message));
-      toast.error(error.message);
-    }
-  };
+( user, page, limit ) =>
+async (dispatch) => {
+  dispatch(slice.actions.startLoading());
+  try {
+    const params = { user, page, limit };
+    const response = await apiService.get(`/wallets`, {
+      params,
+    });
+    dispatch(slice.actions.resetWallets());
+    dispatch(slice.actions.getWalletsSuccess(response.data));
+  } catch (error) {
+    dispatch(slice.actions.hasError(error.message));
+    toast.error(error.message);
+  }
+};
 
   export const deleteWallet =
   ( _id, user, page, limit) =>

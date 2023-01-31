@@ -115,9 +115,6 @@ function TransactionsList() {
     dispatch(getCategories( user, page, "all" ));
   }, [])
 
-
-    let location = useLocation();
-    console.log("location", location)
   return (
     <div 
       style={{ 

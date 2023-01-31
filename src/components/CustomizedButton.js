@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "@mui/material";
 
-function SmallButton({ text}) {
+function SmallButton({ form, type, text}) {
 
   return (
     <Button 
@@ -12,6 +12,8 @@ function SmallButton({ text}) {
         color: "#000",
         boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87 )"
       }}
+      type={type}
+      form={form}
     >
       {text}
     </Button>

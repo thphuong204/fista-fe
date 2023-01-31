@@ -118,7 +118,7 @@ function AddTransactionAccordion ({walletById, currentPageWallets, categoryById,
                 <AccordionDetails style={{ padding: "8px 16px" }} className={"classes.details"}>
                     <SelectingContainer>
                         <FormProvider {...methods}>
-                            <form onSubmit={methods.handleSubmit(onSubmit)} style={{width: "100%"}}>
+                            <form id="form-hook" onSubmit={methods.handleSubmit(onSubmit)} style={{width: "100%"}}>
                                 <Grid container style={{ margin: "0" }}>
                                     <Card sx={{ display: "grid", width:"100%", p: 1, rowGap: 2 }}>
                                             <AutoCompleteList 
@@ -149,8 +149,7 @@ function AddTransactionAccordion ({walletById, currentPageWallets, categoryById,
                     </SelectingContainer>
                 </AccordionDetails>
                 <AccordionActions>
-                  <SmallButton text={"Cancel"}/>
-                  <SmallButton text={"Save"}/>
+                  <SmallButton form={"form-hook"} type={"submit"} text={"Save"}/>
                 </AccordionActions>
             </Accordion>
         </div>

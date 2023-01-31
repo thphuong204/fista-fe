@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import { useForm, FormProvider } from "react-hook-form";
+import { useForm, FormProvider, useFormContext, Controller } from "react-hook-form";
 import { SmallTextField } from "../../components/form/CustomizedTextField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -41,19 +41,29 @@ const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
     },
 }));
 
-function AutoCompleteList ({ id, children, sourceArray }) {
+function AutoCompleteList ({ id, name, children, sourceArray }) {
+    const {control}  = useFormContext();
     return (
-        <Autocomplete
-            size="small"
-            disablePortal
-            id={id}
-            options={sourceArray.map((option)=> option.name)}
-            renderInput={(params) => <TextField {...params} label={children} />}
-            style={{
-                width: "100%",
-                maxWidth: "350px",
-                height: "40px"
-            }}
+        <Controller
+            name={name}
+            control={control}
+            render={({ 
+                field, 
+                fieldState: { error }
+            }) => (
+                <Autocomplete
+                    size="small"
+                    disablePortal
+                    id={id}
+                    options={sourceArray.map((option)=> option.name)}
+                    renderInput={(params) => <TextField {...params} label={children} />}
+                    style={{
+                        width: "100%",
+                        maxWidth: "350px",
+                        height: "40px"
+                    }}
+                />
+            )}
         />
     )
 }
@@ -122,15 +132,18 @@ function AddTransactionAccordion ({walletById, currentPageWallets, categoryById,
                                 <Grid container style={{ margin: "0" }}>
                                     <Card sx={{ display: "grid", width:"100%", p: 1, rowGap: 2 }}>
                                             <AutoCompleteList 
+                                                name={"type"}
                                                 children={"Type"} 
                                                 sourceArray={typeArray}
                                             />
                                             <AutoCompleteList 
                                                 id={"wallet"}
+                                                name={"wallet"}
                                                 children={"Wallet"}
                                                 sourceArray={walletArray}
                                             />
                                             <AutoCompleteList 
+                                                name={"category"}
                                                 children={"Category"} 
                                                 sourceArray={categoryArray}
                                             />

@@ -7,9 +7,7 @@ import {
   Grid, 
   List, 
   Typography, 
-  Container, 
-  Autocomplete,
-  TextField
+  Container
 } from '@mui/material';
 import {getTransactions} from './transactionSlice';
 import {getWallets} from '../wallet/walletSlice';
@@ -28,46 +26,6 @@ const BackgroundFirstLayer = styled('div')(({ theme }) => ({
 const BackgroundSecondLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.primary.darker,
 }));
-
-function WalletOptionBox() {
-  
-  const walletLists = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-    { label: 'The Godfather: Part II', year: 1974 },
-    { label: 'The Dark Knight', year: 2008 },
-  ]
-
-  return (
-    <Autocomplete
-      size="small"
-      id="combo-box"
-      options={walletLists}
-      defaultValue={walletLists[0].title}
-      sx={{ 
-        width: "100%",
-        '& .MuiFilledInput-root': {
-          backgroundColor: "#fff",
-          boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)",
-          color: "#4c4c4c"
-        }, 
-        '& .MuiFormLabel-root': {
-          color: "#4c4c4c"
-        },
-      }}
-      style={{
-        height: "32px"
-      }}
-      renderInput={(params) => (
-        <TextField 
-          {...params} 
-          variant="filled"
-          label="Wallets" 
-        />
-      )}
-    />
-  );
-}
 
 function TransactionsByDate ({date, transactionsArray}) {
   return (
@@ -93,16 +51,16 @@ function TransactionsByDate ({date, transactionsArray}) {
           <Typography>{date}</Typography>
         </Box>
         <Box>
-          {transactionsArray.map((transObject, i) => {
+          {transactionsArray?.map((transObject, i) => {
             return (
               <Grid container spacing={2} style={{ width: "100%", margin:"0", padding: "2px 0"}}
                 key={transObject._id}
               >
-                  <Grid item xs={2}>
-                    {`${transObject.category}`}
+                  <Grid item xs={2} style={{wordBreak:"break-all"}}>
+                    {`${transObject?.category?.name}`}
                   </Grid > 
-                  <Grid item xs={6}>
-                    {`${transObject.description}`}
+                  <Grid item xs={6} style={{wordBreak:"break-word"}}>
+                    {`${transObject?.description}`}
                   </Grid>
                   <Grid item xs={4} style={{textAlign:"right"}}>
                     {fNumber(transObject.amount)}
@@ -157,9 +115,9 @@ function TransactionsList() {
     dispatch(getCategories( user, page, "all" ));
   }, [])
 
-    let location = useLocation();
-    let params = new URLSearchParams(location.search);
 
+    let location = useLocation();
+    console.log("location", location)
   return (
     <div 
       style={{ 
@@ -188,7 +146,10 @@ function TransactionsList() {
           />
         </Grid>
         <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>
-          <FilterList WalletOptionBox={WalletOptionBox}/>
+          <FilterList 
+            walletById={walletById}
+            currentPageWallets={currentPageWallets}
+          />
         </Grid>
       </Box>
       <Box 
@@ -278,4 +239,4 @@ function TransactionsList() {
   );
 }
 
-export { TransactionsList, WalletOptionBox }
+export { TransactionsList }

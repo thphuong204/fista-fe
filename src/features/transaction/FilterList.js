@@ -7,7 +7,9 @@ import {
     Box,
     Accordion,
     AccordionDetails,
-    AccordionActions
+    AccordionActions,
+    Autocomplete,
+    TextField
   } from '@mui/material';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import SearchIcon from '@mui/icons-material/Search';
@@ -106,10 +108,54 @@ const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
   },
 }));
 
-function FilterList ({ WalletOptionBox }) {
+
+
+function WalletOptionBox({setACValue, walletLists}) {
+  
+  return (
+    <Autocomplete
+      size="small"
+      id="combo-box"
+      options={walletLists.map((option)=> option.name)}
+      defaultValue={walletLists[0].name}
+      onChange={(event, value) => setACValue(value)}
+      sx={{ 
+        width: "100%",
+        '& .MuiFilledInput-root': {
+          backgroundColor: "#fff",
+          boxShadow: "1px 1px 10px 1px rgba( 176, 176, 176, 0.87 ), -1px -1px 10px 1px rgba( 176, 176, 176, 0.87)",
+          color: "#4c4c4c"
+        }, 
+        '& .MuiFormLabel-root': {
+          color: "#4c4c4c"
+        },
+      }}
+      style={{
+        height: "32px"
+      }}
+      renderInput={(params) => (
+        <TextField 
+          {...params} 
+          variant="filled"
+          label="Wallets" 
+        />
+      )}
+    />
+  );
+}
+
+function FilterList ({ walletById, currentPageWallets }) {
     const now = new Date()
     const [valueFirst, onChangeFirst] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
     const [valueSecond, onChangeSecond] = useState(new Date());
+    const [acValue, setACValue] = useState("All");
+    
+    const walletArray =[{name: "All"}];
+      currentPageWallets.forEach((id) => {
+          walletArray.push(
+            walletById[id]
+          )
+    })
 
      return (
           <div
@@ -132,7 +178,7 @@ function FilterList ({ WalletOptionBox }) {
               </AccordionSummary>
               <AccordionDetails style={{ padding: "8px 16px" }} className={"classes.details"}>
                   <SelectingContainer>
-                      <WalletOptionBox/>
+                      <WalletOptionBox setACValue={setACValue} walletLists={walletArray}/>
                       <Search style={{width: "100%", margin: "0"}}>
                           <SearchIconWrapper>
                             <SearchIcon />
@@ -172,4 +218,4 @@ function FilterList ({ WalletOptionBox }) {
      )
 }
 
-export  { FilterList, SelectingContainer }
+export  { FilterList, SelectingContainer, WalletOptionBox }

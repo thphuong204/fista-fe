@@ -1,18 +1,36 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {getWallets} from '../features/wallet/walletSlice';
+import {getCategories} from '../features/category/categorySlice';
 import { Box, Container, Stack, Grid } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import LoadingScreen from "../components/LoadingScreen";
 import { FilterList } from "../features/transaction/FilterList";
-import { WalletOptionBox } from "../features/transaction/TransactionsList";
 import { PieChart, BarChart } from "../features/report";
 
 function ReportPage() {
+  const [page, setPage] = useState(1);
+  const [user] = useState("63bf72b6818c592241a1af58");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const { 
+    walletById, 
+    currentPageWallets
+  } = useSelector(
+    (state) => state.wallet
+  );
+  
+  const dispatch = useDispatch();
+  useEffect (() => {
+    dispatch(getWallets( user, page, "all" ));
+    dispatch(getCategories( user, page, "all" ));
+  }, [])
 
   useEffect(()=> {
     setLoading(false)
   },[])
+
+  
 
   const theme = useTheme();
 
@@ -25,7 +43,7 @@ function ReportPage() {
           ) : (
             <Grid container spacing={3}>
               <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>
-                <FilterList WalletOptionBox={WalletOptionBox}/>
+                <FilterList walletById={walletById} currentPageWallets={currentPageWallets} />
               </Grid>
 
               <Grid item xs={12}>

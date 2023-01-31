@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Box, Grid, Card, Stack } from "@mui/material";
 import useAuth from "../../hooks/useAuth";
@@ -23,14 +23,20 @@ function AccountInfo() {
     dispatch(getUser(_id));
   }, [])
 
-  const defaultValues = {
+  const [defaultValues, setDefaultValues] =  useState({
     name: currentUser?.name || "",
     email: currentUser?.email || "",
-  };
+  });
+  useEffect(()=> {
+    setDefaultValues({
+      name: currentUser?.name,
+      email: currentUser?.email
+    })
+  }, [currentUser])
 
   const methods = useForm({
     resolver: yupResolver(UpdateUserSchema),
-    defaultValues,
+    defaultValues: defaultValues,
   });
 
   const {

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/material/styles';
 import { 
-    Button, 
     Grid,
     Card, 
+    Box,
     TextField,
     Autocomplete,
     Accordion,
@@ -18,15 +18,19 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SelectingContainer } from "./FilterList";
 import { SmallButton } from '../../components/CustomizedButton';
+import DatePicker from 'react-date-picker';
 
 const typeArray = [
-    {name: 'Expense'},
-    {name: 'Income'},
-    {name: 'Transfer'},
+    {_id: "1", name: 'Expense'},
+    {_id: "2", name: 'Income'},
+    {_id: "3", name: 'Transfer'},
 ]
 
 const CreateTransSchema = yup.object().shape({
     name: yup.string().required("Name is required"),
+    wallet: yup.string().required("Wallet is required"),
+    category: yup.string().required("Category is required"),
+    amount: yup.string().required("Amount is required"),
 });
 
 const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
@@ -41,7 +45,7 @@ const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
     },
 }));
 
-function AutoCompleteList ({ id, name, children, sourceArray }) {
+function AutoCompleteList ({ id, name, children, sourceArray}) {
     const {control}  = useFormContext();
     return (
         <Controller
@@ -53,10 +57,23 @@ function AutoCompleteList ({ id, name, children, sourceArray }) {
             }) => (
                 <Autocomplete
                     size="small"
-                    disablePortal
+                    {...field}
                     id={id}
-                    options={sourceArray.map((option)=> option.name)}
-                    renderInput={(params) => <TextField {...params} label={children} />}
+                    onChange={(event, value) =>  field.onChange(value)}
+                    options={sourceArray}
+                    getOptionLabel={ sourceArray => sourceArray.name || ""}
+                    isOptionEqualToValue={(sourceArray, value) => {
+                        if(value.name) return sourceArray.name === value.name
+                        return true
+                    }}
+                    renderInput={(params) => {
+                        return (
+                            <TextField 
+                                {...params} 
+                                label={children} 
+                            />
+                        )
+                    }}
                     style={{
                         width: "100%",
                         maxWidth: "350px",
@@ -68,15 +85,38 @@ function AutoCompleteList ({ id, name, children, sourceArray }) {
     )
 }
 
-function AddTransactionAccordion ({walletById, currentPageWallets, categoryById, currentPageCategories}) {
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [ isLoading ] = React.useState(false);
+function CustomizedBox ({ children }) {
+    return (
+        <Grid item xs={12} md={6}>
+          <Box
+              style={{ 
+                height: "40px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "0 12px",
+                textTransform: "capitalize",
+                textAlign: "left",
+                fontSize: "16px",
+                backgroundColor: "#fff",
+                color: "#4c4c4c",
+                borderRadius: "8px",
+                border: "1px solid rgba(0, 0, 0, 0.23)"
+              }}
+          >
+            {children}
+          </Box>
+        </Grid>
+    )
+}
 
-    const open = Boolean(anchorEl);
-
+function AddTransactionAccordion ({walletArray, categoryArray}) {
+    const now = new Date()
+    const [valueFirst, onChangeFirst] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
     const defaultValues = {
-        wallet: "Wallet",
-        category: "Category",
+        type: "Expense",
+        wallet: "",
+        category: "",
         amount: "0",
         date: new Date(),
         description: "Description"
@@ -89,26 +129,22 @@ function AddTransactionAccordion ({walletById, currentPageWallets, categoryById,
     
     const {
     handleSubmit,
-    formState: { isSubmitting },
+    getValues,
+    control,
+    setError,
+    reset,
+    formState: { error, isSubmitting },
     } = methods;
 
-    const onSubmit = (data) => {
-    console.log("a")
+    const onSubmit = async (data) => {
+        console.log("data", data)
+        return data
     };
-    
-    const walletArray =[];
-    currentPageWallets.forEach((id) => {
-        walletArray.push(
-           walletById[id]
-        )
+
+    useEffect(() => {
+        console.log("getValues", getValues())
     })
     
-    const categoryArray = []
-    currentPageCategories.forEach((id) => {
-        categoryArray.push(
-            categoryById[id]
-        )
-    })
     return (
         <div style={{
                 width:"100%",
@@ -132,6 +168,7 @@ function AddTransactionAccordion ({walletById, currentPageWallets, categoryById,
                                 <Grid container style={{ margin: "0" }}>
                                     <Card sx={{ display: "grid", width:"100%", p: 1, rowGap: 2 }}>
                                             <AutoCompleteList 
+                                                id={"type"}
                                                 name={"type"}
                                                 children={"Type"} 
                                                 sourceArray={typeArray}
@@ -143,6 +180,7 @@ function AddTransactionAccordion ({walletById, currentPageWallets, categoryById,
                                                 sourceArray={walletArray}
                                             />
                                             <AutoCompleteList 
+                                                id={"category"}
                                                 name={"category"}
                                                 children={"Category"} 
                                                 sourceArray={categoryArray}
@@ -150,9 +188,27 @@ function AddTransactionAccordion ({walletById, currentPageWallets, categoryById,
                                             <SmallTextField name="description" label="Description"/>
                                             <Grid container item xs={12}
                                                 style={{ flexWrap: "noWrap", gap: "0 8px"}}
-                                            >
-                                                <SmallTextField name="date" label="Date" />
+                                            >   
+                                                <CustomizedBox>
+                                                            <Controller
+                                                            control={control}
+                                                            name="date"
+                                                            render={({ field }) => (
+
+                                                                <DatePicker 
+                                                                    onChange={(e) => field.onChange(e)}
+                                                                    selected={field.value}
+                                                                    value={field.value}
+                                                                    clearIcon={null}
+                                                                    calendarIcon={null}
+                                                                />
+                                                            )}
+                                                            />
+                                                            
+                                                </CustomizedBox>
+                                                <Grid item xs={12} md={6}>
                                                 <SmallTextField name="amount" label="Amount"/>
+                                                </Grid>
                                             </Grid>
                                             
                                     </Card>

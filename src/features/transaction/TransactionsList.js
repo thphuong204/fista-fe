@@ -115,6 +115,21 @@ function TransactionsList() {
     dispatch(getCategories( user, page, "all" ));
   }, [])
 
+  
+  let walletArray = []
+  currentPageWallets.forEach((id) => {
+      walletArray.push(
+         walletById[id]
+      )
+  })
+
+  let categoryArray = []
+  currentPageCategories.forEach((id) => {
+    categoryArray.push(
+       categoryById[id]
+    )
+  })
+
   return (
     <div 
       style={{ 
@@ -136,10 +151,8 @@ function TransactionsList() {
       > 
         <Grid container item xs={12} md={12} style={{ justifyContent: "center" , alignContent: "center" }}>
           <AddTransactionAccordion 
-            walletById={walletById}
-            currentPageWallets={currentPageWallets}
-            categoryById={categoryById}
-            currentPageCategories={currentPageCategories}
+            walletArray={walletArray}
+            categoryArray={categoryArray}
           />
         </Grid>
         <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>

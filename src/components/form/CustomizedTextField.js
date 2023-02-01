@@ -1,5 +1,6 @@
 import { useFormContext, Controller } from "react-hook-form";
 import MuiTextField from '@mui/material/TextField';
+import { fNumber } from "../../utils/formatNumber";
 
 function SmallTextField({ name, ...other }) {
   const {control}  = useFormContext();
@@ -11,16 +12,33 @@ function SmallTextField({ name, ...other }) {
       render={({ 
         field, 
         fieldState: { error }
-      }) => (
-        <MuiTextField
-          size="small"
-          {...field}
-          fullWidth
-          error={!!error}
-          helperText={error?.message}
-          {...other}
-        />
-      )}
+      }) => {
+        if (name==="amount") {
+          return (
+            <MuiTextField
+            size="small"
+            {...field}
+            fullWidth
+            value={fNumber(field.value)}
+            error={!!error}
+            helperText={error?.message}
+            {...other}
+            />
+          )
+        } else {
+          return (
+            <MuiTextField
+            size="small"
+            {...field}
+            fullWidth
+            error={!!error}
+            helperText={error?.message}
+            {...other}
+            />
+          )
+        }
+      }
+    }
     />
   );
 }

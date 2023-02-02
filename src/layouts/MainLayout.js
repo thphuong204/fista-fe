@@ -2,11 +2,13 @@ import { Outlet } from "react-router-dom";
 import { Box, Stack } from "@mui/material";
 import MainFooter from "./MainFooter";
 import MainHeader from "./MainHeader";
+import ToastifyAlert from "../components/ToastifyAlert";
 
 function MainLayout() {
   return (
     <Stack sx={{ minHeight: "100vh" }}>
       <MainHeader />
+      <ToastifyAlert />
 
       <Outlet />
 

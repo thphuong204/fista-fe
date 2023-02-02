@@ -3,7 +3,13 @@ import { styled } from '@mui/material/styles';
 import { 
     Grid,
     Card, 
+    Container,
     Box,
+    Alert,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
     TextField,
     Autocomplete,
     Accordion,
@@ -16,22 +22,30 @@ import { useForm, FormProvider, useFormContext, Controller } from "react-hook-fo
 import { SmallTextField } from "../../components/form/CustomizedTextField";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SelectingContainer } from "./FilterList";
 import { SmallButton } from '../../components/CustomizedButton';
 import DatePicker from 'react-date-picker';
 
-const typeArray = [
-    {_id: "1", name: 'Expense'},
-    {_id: "2", name: 'Income'},
-    {_id: "3", name: 'Transfer'},
-]
-
 const CreateTransSchema = yup.object().shape({
-    name: yup.string().required("Name is required"),
-    wallet: yup.string().required("Wallet is required"),
-    category: yup.string().required("Category is required"),
-    amount: yup.string().required("Amount is required"),
-});
+    fromWallet: yup.object().typeError("Wallet is required").required("Wallet is required"),
+    fromCategory: yup.object().typeError("Category is required").required("Category is required"),
+    amount: yup.string().typeError("Only number letters are allowed")
+        .matches(/[0-9]+(\.[0-9][0-9]?)?/, {
+        message:'Integer number only.  Example 27',
+        excludeEmptyString: true
+        })
+        .required("Amount is required"),
+    description: yup.string().required("Description is required"),
+})
+
+const defaultValues = {
+    fromWallet: "",
+    toWallet: null,
+    fromCategory: "",
+    toCategory: null,
+    amount: null,
+    date: new Date(),
+    description: "Description"
+};
 
 const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
     height: "40px",
@@ -45,7 +59,26 @@ const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
     },
 }));
 
-function AutoCompleteList ({ id, name, children, sourceArray}) {
+function AddTransactionContainer ({ children }) {
+    return (
+      <Container
+                style={{
+                  width: "100%",
+                  maxWidth: "350px",
+                  display: "flex",
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
+                  gap: "8px",
+                  margin: "0 0 16px 0",
+                  padding: "0"
+                }}
+      >
+        {children}
+      </Container>
+    )
+}
+
+function AutoCompleteList ({ id, name, children, sourceArray, ...other}) {
     const {control}  = useFormContext();
     return (
         <Controller
@@ -54,7 +87,8 @@ function AutoCompleteList ({ id, name, children, sourceArray}) {
             render={({ 
                 field, 
                 fieldState: { error }
-            }) => (
+            }) => { 
+                return  (
                 <Autocomplete
                     size="small"
                     {...field}
@@ -68,19 +102,35 @@ function AutoCompleteList ({ id, name, children, sourceArray}) {
                     }}
                     renderInput={(params) => {
                         return (
-                            <TextField 
-                                {...params} 
-                                label={children} 
-                            />
+                            <>
+                                <TextField 
+                                    {...params} 
+                                    label={children} 
+                                    fullWidth
+                                    error={!!error}
+                                    helperText={error?.message}
+                                    {...other}
+                                    sx={{
+                                        '&	input': {
+                                            fontSize: '10px',
+                                            minWidth: '90px'
+                                        }
+                                    }}
+                                />
+                            </>
                         )
                     }}
+                    clearIcon={false}
+                    popupIcon={false}
                     style={{
                         width: "100%",
                         maxWidth: "350px",
-                        height: "40px"
+                        height: "40px",
+                        fontSize: "12px"
                     }}
                 />
-            )}
+                )
+            }}
         />
     )
 }
@@ -110,17 +160,9 @@ function CustomizedBox ({ children }) {
     )
 }
 
-function AddTransactionAccordion ({walletArray, categoryArray}) {
+function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCategoryArray, inflowCategoryArray, outflowCategoryArray}) {
     const now = new Date()
-    const [valueFirst, onChangeFirst] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
-    const defaultValues = {
-        type: "Expense",
-        wallet: "",
-        category: "",
-        amount: "0",
-        date: new Date(),
-        description: "Description"
-    };
+    const [type, setType] = useState()
 
     const methods = useForm({
         resolver: yupResolver(CreateTransSchema),
@@ -133,18 +175,25 @@ function AddTransactionAccordion ({walletArray, categoryArray}) {
     control,
     setError,
     reset,
-    formState: { error, isSubmitting },
+    formState: { errors, isSubmitting },
     } = methods;
 
     const onSubmit = async (data) => {
-        console.log("data", data)
-        return data
+       
+        try {
+            console.log("data", data)
+            reset();
+        } catch (error) {
+            reset();
+            console.log("error", error)
+            setError("responseError", error);
+        }
+    };
+    
+    const handleTypeChange = (event) => {
+        setType(event.target.value);
     };
 
-    useEffect(() => {
-        console.log("getValues", getValues())
-    })
-    
     return (
         <div style={{
                 width:"100%",
@@ -162,29 +211,111 @@ function AddTransactionAccordion ({walletArray, categoryArray}) {
                     <p style={{ margin: "0", fontSize: "18px", fontWeight: "bold"}}>Add Transaction</p>
                 </AccordionSummary>
                 <AccordionDetails style={{ padding: "8px 16px" }} className={"classes.details"}>
-                    <SelectingContainer>
+                    <AddTransactionContainer>
+                        <FormControl fullWidth>
+                            <InputLabel id="type-label">Type</InputLabel>
+                            <Select
+                                labelId="type-label"
+                                id="type"
+                                value={type || ""}
+                                defaultValue={"1"}
+                                label="Type"
+                                onChange={handleTypeChange}
+                                style={{
+                                    width: "100%",
+                                    maxWidth: "350px",
+                                    height: "40px"
+                                }}
+                                >
+                                <MenuItem value={"1"}>Expense</MenuItem>
+                                <MenuItem value={"2"}>Income</MenuItem>
+                                <MenuItem value={"3"}>Transfer</MenuItem>
+                            </Select>
+                        </FormControl>
+
                         <FormProvider {...methods}>
-                            <form id="form-hook" onSubmit={methods.handleSubmit(onSubmit)} style={{width: "100%"}}>
+                            <form 
+                                id="form-hook" 
+                                onSubmit={methods.handleSubmit(onSubmit)} 
+                                style={{width: "100%"}}
+                            >
                                 <Grid container style={{ margin: "0" }}>
-                                    <Card sx={{ display: "grid", width:"100%", p: 1, rowGap: 2 }}>
-                                            <AutoCompleteList 
-                                                id={"type"}
-                                                name={"type"}
-                                                children={"Type"} 
-                                                sourceArray={typeArray}
-                                            />
-                                            <AutoCompleteList 
-                                                id={"wallet"}
-                                                name={"wallet"}
-                                                children={"Wallet"}
-                                                sourceArray={walletArray}
-                                            />
-                                            <AutoCompleteList 
-                                                id={"category"}
-                                                name={"category"}
-                                                children={"Category"} 
-                                                sourceArray={categoryArray}
-                                            />
+                                {!!errors.responseError && (
+                                    <Alert severity="error">{errors.responseError.message}</Alert>
+                                )}
+                                    <Card sx={{ display: "grid", width:"100%", p: 1, rowGap: 2, overflow: "visible" }}>
+                                        { 
+                                            type === "3" ? (
+                                                <>
+                                                <Grid container item xs={12}
+                                                    style={{ flexWrap: "noWrap", gap: "0 8px"}}
+                                                >
+                                                    <Grid container item xs={12} md={6} style={{gap: "8px"}}>
+                                                        <AutoCompleteList 
+                                                            id={"fromCategory"}
+                                                            name={"fromCategory"}
+                                                            children={"Category"} 
+                                                            sourceArray={outflowCategoryArray}
+                                                        />
+                                                        <AutoCompleteList 
+                                                            id={"fromWallet"}
+                                                            name={"fromWallet"}
+                                                            children={"From Wallet"}
+                                                            sourceArray={walletArray}
+                                                        />
+                                                    </Grid>
+                                                    <Grid container item xs={12} md={6} style={{gap: "8px"}}>
+                                                        <AutoCompleteList 
+                                                            id={"toCategory"}
+                                                            name={"toCategory"}
+                                                            children={"Category"} 
+                                                            sourceArray={inflowCategoryArray}
+                                                        />
+                                                        <AutoCompleteList 
+                                                            id={"toWallet"}
+                                                            name={"toWallet"}
+                                                            children={"To Wallet"}
+                                                            sourceArray={walletArray}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                </>
+                                            )
+                                            : type === "2" ? (
+                                                <>
+                                                    <AutoCompleteList 
+                                                        id={"fromWallet"}
+                                                        name={"fromWallet"}
+                                                        children={"Wallet"}
+                                                        sourceArray={walletArray}
+                                                    />
+                                                    <AutoCompleteList 
+                                                        id={"fromCategory"}
+                                                        name={"fromCategory"}
+                                                        children={"Category"} 
+                                                        sourceArray={incomeCategoryArray}
+                                                    />
+                                                </>
+                                                )
+                                            : (
+                                                <> 
+                                                    <AutoCompleteList 
+                                                        id={"fromWallet"}
+                                                        name={"fromWallet"}
+                                                        children={"Wallet"}
+                                                        sourceArray={walletArray}
+                                                    />
+                                                    <AutoCompleteList 
+                                                        id={"fromCategory"}
+                                                        name={"fromCategory"}
+                                                        children={"Category"} 
+                                                        sourceArray={expenseCategoryArray}
+                                                    />
+                                                </>
+                                            )
+                                                    
+                                        } 
+                                            
                                             <SmallTextField name="description" label="Description"/>
                                             <Grid container item xs={12}
                                                 style={{ flexWrap: "noWrap", gap: "0 8px"}}
@@ -207,7 +338,7 @@ function AddTransactionAccordion ({walletArray, categoryArray}) {
                                                             
                                                 </CustomizedBox>
                                                 <Grid item xs={12} md={6}>
-                                                <SmallTextField name="amount" label="Amount"/>
+                                                    <SmallTextField name="amount" label="Amount"/>
                                                 </Grid>
                                             </Grid>
                                             
@@ -215,7 +346,7 @@ function AddTransactionAccordion ({walletArray, categoryArray}) {
                                 </Grid>
                             </form>
                         </FormProvider>
-                    </SelectingContainer>
+                    </AddTransactionContainer>
                 </AccordionDetails>
                 <AccordionActions>
                   <SmallButton form={"form-hook"} type={"submit"} text={"Save"}/>

@@ -123,12 +123,47 @@ function TransactionsList() {
       )
   })
 
-  let categoryArray = []
+  let incomeCategoryArray = []
+  let expenseCategoryArray = []
+  let inflowCategoryArray = []
+  let outflowCategoryArray = []
   currentPageCategories.forEach((id) => {
-    categoryArray.push(
-       categoryById[id]
-    )
+    if (categoryById[id]?.classification === "income") {
+      incomeCategoryArray.push(
+        categoryById[id]
+      )
+    } 
+
+    if (categoryById[id]?.classification === "expense") {
+      expenseCategoryArray.push(
+        categoryById[id]
+      )
+    }
+    
+    if (
+          categoryById[id]?.classification === "inflow" ||
+          categoryById[id]?.classification === "increasing asset" ||
+          categoryById[id]?.classification === "increasing receivable" ||
+          categoryById[id]?.classification === "reducing payable"
+      ) {
+        inflowCategoryArray.push(
+          categoryById[id]
+        )
+    } 
+    
+    if (
+        categoryById[id]?.classification === "outflow" ||
+        categoryById[id]?.classification === "reducing asset" ||
+        categoryById[id]?.classification === "reducing receivable" ||
+        categoryById[id]?.classification === "increasing payable"
+      ) {
+        outflowCategoryArray.push(
+          categoryById[id]
+        )
+    }
   })
+
+  
 
   return (
     <div 
@@ -152,7 +187,10 @@ function TransactionsList() {
         <Grid container item xs={12} md={12} style={{ justifyContent: "center" , alignContent: "center" }}>
           <AddTransactionAccordion 
             walletArray={walletArray}
-            categoryArray={categoryArray}
+            incomeCategoryArray={incomeCategoryArray}
+            expenseCategoryArray={expenseCategoryArray}
+            inflowCategoryArray={inflowCategoryArray}
+            outflowCategoryArray={outflowCategoryArray}
           />
         </Grid>
         <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>

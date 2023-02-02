@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useDispatch } from "react-redux";
 import { styled } from '@mui/material/styles';
 import { 
     Grid,
@@ -18,6 +19,7 @@ import {
 } from '@mui/material';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { createTransaction } from './transactionSlice';
 import { useForm, FormProvider, useFormContext, Controller } from "react-hook-form";
 import { SmallTextField } from "../../components/form/CustomizedTextField";
 import * as yup from "yup";
@@ -26,8 +28,6 @@ import { SmallButton } from '../../components/CustomizedButton';
 import DatePicker from 'react-date-picker';
 
 const CreateTransSchema = yup.object().shape({
-    fromWallet: yup.object().typeError("Wallet is required").required("Wallet is required"),
-    fromCategory: yup.object().typeError("Category is required").required("Category is required"),
     amount: yup.string().typeError("Only number letters are allowed")
         .matches(/[0-9]+(\.[0-9][0-9]?)?/, {
         message:'Integer number only.  Example 27',
@@ -35,12 +35,13 @@ const CreateTransSchema = yup.object().shape({
         })
         .required("Amount is required"),
     description: yup.string().required("Description is required"),
+    
 })
 
 const defaultValues = {
-    fromWallet: "",
+    fromWallet: null,
     toWallet: null,
-    fromCategory: "",
+    fromCategory: null,
     toCategory: null,
     amount: null,
     date: new Date(),
@@ -106,14 +107,18 @@ function AutoCompleteList ({ id, name, children, sourceArray, ...other}) {
                                 <TextField 
                                     {...params} 
                                     label={children} 
+                                    required
                                     fullWidth
                                     error={!!error}
                                     helperText={error?.message}
                                     {...other}
                                     sx={{
                                         '&	input': {
-                                            fontSize: '10px',
+                                            fontSize: '12px',
                                             minWidth: '90px'
+                                        },
+                                        '& label': {
+                                            fontSize: '12px'
                                         }
                                     }}
                                 />
@@ -140,7 +145,7 @@ function CustomizedBox ({ children }) {
         <Grid item xs={12} md={6}>
           <Box
               style={{ 
-                height: "40px",
+                height: "34.25px",
                 display: "flex",
                 justifyContent: "space-between",
                 alignItems: "center",
@@ -160,9 +165,17 @@ function CustomizedBox ({ children }) {
     )
 }
 
-function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCategoryArray, inflowCategoryArray, outflowCategoryArray}) {
+function AddTransactionAccordion ({
+    walletArray, 
+    incomeCategoryArray, 
+    expenseCategoryArray, 
+    inflowCategoryArray, 
+    outflowCategoryArray,
+    type,
+    setType
+}) {
+    const dispatch = useDispatch();
     const now = new Date()
-    const [type, setType] = useState()
 
     const methods = useForm({
         resolver: yupResolver(CreateTransSchema),
@@ -182,7 +195,34 @@ function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCate
        
         try {
             console.log("data", data)
+            const {fromWallet, toWallet, fromCategory, toCategory, date, amount, description} = data
+            let parseAmount = parseInt(amount.replaceAll(",",""));
+            console.log("parseAmount", parseAmount)
+            
+            if (fromCategory?._id && fromWallet?._id) {
+                dispatch(createTransaction({ 
+                    user: "63bf72b6818c592241a1af58", 
+                    wallet: fromWallet._id, 
+                    category: fromCategory._id, 
+                    date, 
+                    amount: -parseAmount, 
+                    description 
+                }))
+            }   
+
+            if (toCategory?._id && toWallet?._id) {
+                dispatch(createTransaction({ 
+                    user: "63bf72b6818c592241a1af58", 
+                    wallet: toWallet._id, 
+                    category: toCategory._id, 
+                    date, 
+                    amount: parseAmount, 
+                    description 
+                }))
+            }
+
             reset();
+            return 
         } catch (error) {
             reset();
             console.log("error", error)
@@ -217,8 +257,7 @@ function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCate
                             <Select
                                 labelId="type-label"
                                 id="type"
-                                value={type || ""}
-                                defaultValue={"1"}
+                                value={type || 1}
                                 label="Type"
                                 onChange={handleTypeChange}
                                 style={{
@@ -227,7 +266,7 @@ function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCate
                                     height: "40px"
                                 }}
                                 >
-                                <MenuItem value={"1"}>Expense</MenuItem>
+                                <MenuItem selected value={"1"}>Expense</MenuItem>
                                 <MenuItem value={"2"}>Income</MenuItem>
                                 <MenuItem value={"3"}>Transfer</MenuItem>
                             </Select>
@@ -260,7 +299,7 @@ function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCate
                                                         <AutoCompleteList 
                                                             id={"fromWallet"}
                                                             name={"fromWallet"}
-                                                            children={"From Wallet"}
+                                                            children={"Wallet (Cash Out)"}
                                                             sourceArray={walletArray}
                                                         />
                                                     </Grid>
@@ -274,7 +313,7 @@ function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCate
                                                         <AutoCompleteList 
                                                             id={"toWallet"}
                                                             name={"toWallet"}
-                                                            children={"To Wallet"}
+                                                            children={"Wallet (Cash In)"}
                                                             sourceArray={walletArray}
                                                         />
                                                     </Grid>
@@ -284,14 +323,14 @@ function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCate
                                             : type === "2" ? (
                                                 <>
                                                     <AutoCompleteList 
-                                                        id={"fromWallet"}
-                                                        name={"fromWallet"}
-                                                        children={"Wallet"}
+                                                        id={"toWallet"}
+                                                        name={"toWallet"}
+                                                        children={"Wallet (Cash In)"}
                                                         sourceArray={walletArray}
                                                     />
                                                     <AutoCompleteList 
-                                                        id={"fromCategory"}
-                                                        name={"fromCategory"}
+                                                        id={"toCategory"}
+                                                        name={"toCategory"}
                                                         children={"Category"} 
                                                         sourceArray={incomeCategoryArray}
                                                     />
@@ -302,7 +341,7 @@ function AddTransactionAccordion ({walletArray, incomeCategoryArray, expenseCate
                                                     <AutoCompleteList 
                                                         id={"fromWallet"}
                                                         name={"fromWallet"}
-                                                        children={"Wallet"}
+                                                        children={"Wallet (Cash Out)"}
                                                         sourceArray={walletArray}
                                                     />
                                                     <AutoCompleteList 

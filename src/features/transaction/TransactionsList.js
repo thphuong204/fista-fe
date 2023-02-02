@@ -77,6 +77,7 @@ function TransactionsList() {
 
   const [page, setPage] = useState(1);
   const [user] = useState("63bf72b6818c592241a1af58");
+  const [type, setType] = useState();
   let limit = TRANSACTIONS_PER_PAGE 
   const { 
     transactionByDate, 
@@ -108,7 +109,7 @@ function TransactionsList() {
     
   useEffect (() => {
       dispatch(getTransactions( user, page, limit ));
-  }, [page, limit])
+  }, [page, limit, type, dispatch])
 
   useEffect (() => {
     dispatch(getWallets( user, page, "all" ));
@@ -163,8 +164,6 @@ function TransactionsList() {
     }
   })
 
-  
-
   return (
     <div 
       style={{ 
@@ -191,6 +190,8 @@ function TransactionsList() {
             expenseCategoryArray={expenseCategoryArray}
             inflowCategoryArray={inflowCategoryArray}
             outflowCategoryArray={outflowCategoryArray}
+            type={type}
+            setType={setType}
           />
         </Grid>
         <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>

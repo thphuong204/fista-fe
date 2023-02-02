@@ -79,11 +79,12 @@ const slice = createSlice({
 export default slice.reducer;
 
 export const createWallet =
-({ wallet, classification }) =>
+({ accessToken, wallet, classification }) =>
 async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
     const response = await apiService.post("/wallets", {
+      "accessToken": accessToken,
       "name": wallet,
       "classification": classification,
     });
@@ -96,11 +97,11 @@ async (dispatch) => {
 };
 
 export const getWallets =
-( user, page, limit ) =>
+( accessToken, page, limit ) =>
 async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const params = { user, page, limit };
+    const params = { accessToken, page, limit };
     const response = await apiService.get(`/wallets`, {
       params,
     });
@@ -113,12 +114,12 @@ async (dispatch) => {
 };
 
   export const deleteWallet =
-  ( _id, user, page, limit) =>
+  ( _id, accessToken, page, limit) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
 
-      const params = { user, page, limit };
+      const params = { accessToken, page, limit };
       await apiService.delete(`/wallets/${_id}`);
       toast.success("Delete wallet successful");
 

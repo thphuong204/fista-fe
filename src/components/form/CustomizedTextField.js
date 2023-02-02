@@ -23,6 +23,14 @@ function SmallTextField({ name, ...other }) {
             error={!!error}
             helperText={error?.message}
             {...other}
+            sx={{
+              '&	input': {
+                  fontSize: '12px',
+              },
+              '& label': {
+                  fontSize: '12px'
+              },
+            }}
             />
           )
         } else {
@@ -34,6 +42,14 @@ function SmallTextField({ name, ...other }) {
             error={!!error}
             helperText={error?.message}
             {...other}
+            sx={{
+              '&	input': {
+                  fontSize: '12px',
+              },
+              '& label': {
+                  fontSize: '12px'
+              }
+            }}
             />
           )
         }

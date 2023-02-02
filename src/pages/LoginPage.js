@@ -48,9 +48,15 @@ function LoginPage() {
     let from = location.state?.from?.pathname || "/";
     let { email, password } = data;
 
-    auth.login( { email, password }, () => {
-      navigate(from, { replace: true });
-    });
+    try{
+      auth.login( { email, password }, () => {
+        navigate(from, { replace: true });
+      });
+    } catch (error) {
+      reset();
+      setError("responseError", error);
+    }
+    
   };
 
   return (

@@ -76,7 +76,6 @@ function TransactionsByDate ({date, transactionsArray}) {
 function TransactionsList() {
 
   const [page, setPage] = useState(1);
-  const [user] = useState("63bf72b6818c592241a1af58");
   const [type, setType] = useState();
   let limit = TRANSACTIONS_PER_PAGE 
   const { 
@@ -108,12 +107,12 @@ function TransactionsList() {
   const dispatch = useDispatch();
     
   useEffect (() => {
-      dispatch(getTransactions( user, page, limit ));
+      dispatch(getTransactions( page, limit ));
   }, [page, limit, type, dispatch])
 
   useEffect (() => {
-    dispatch(getWallets( user, page, "all" ));
-    dispatch(getCategories( user, page, "all" ));
+    dispatch(getWallets( page, "all" ));
+    dispatch(getCategories( page, "all" ));
   }, [])
 
   

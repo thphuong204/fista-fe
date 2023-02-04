@@ -92,12 +92,11 @@ const slice = createSlice({
 export default slice.reducer;
 
 export const createTransaction =
-  ({ user, wallet, category, date, amount, description }) =>
+  ({ wallet, category, date, amount, description }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
       const response = await apiService.post("/transs", {
-        "user": user,
         "wallet": wallet,
         "category": category,
         "date": date,
@@ -112,11 +111,11 @@ export const createTransaction =
     }
   };
 
-export const getTransactions = ( user, page, limit ) =>
+export const getTransactions = ( page, limit ) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const params = {  user, page, limit };
+      const params = { page, limit };
       const response = await apiService.get(`/transs`, {
         params,
       });
@@ -129,12 +128,12 @@ export const getTransactions = ( user, page, limit ) =>
   };
 
   export const deleteTransaction =
-  ( _id, user, page, limit) =>
+  ( _id, page, limit) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
 
-      const params = { user, page, limit };
+      const params = { page, limit };
       await apiService.delete(`/transs/${_id}`);
       toast.success("Delete Transaction successful");
 
@@ -150,12 +149,11 @@ export const getTransactions = ( user, page, limit ) =>
   };
 
   export const changeTransaction =
-  ( {user, wallet, category, date, amount, description, _id}) =>
+  ( {wallet, category, date, amount, description, _id}) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
       const response = await apiService.put(`/transs/${_id}`, {
-        "user": user,
         "wallet": wallet,
         "category": category,
         "date": date,

@@ -201,7 +201,6 @@ function AddTransactionAccordion ({
             
             if (fromCategory?._id && fromWallet?._id) {
                 dispatch(createTransaction({ 
-                    user: "63bf72b6818c592241a1af58", 
                     wallet: fromWallet._id, 
                     category: fromCategory._id, 
                     date, 
@@ -212,7 +211,6 @@ function AddTransactionAccordion ({
 
             if (toCategory?._id && toWallet?._id) {
                 dispatch(createTransaction({ 
-                    user: "63bf72b6818c592241a1af58", 
                     wallet: toWallet._id, 
                     category: toCategory._id, 
                     date, 

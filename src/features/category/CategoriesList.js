@@ -10,7 +10,6 @@ import {
   TableCell,
   Typography
 } from '@mui/material';
-import FolderIcon from '@mui/icons-material/Folder';
 
 const BackgroundList = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,

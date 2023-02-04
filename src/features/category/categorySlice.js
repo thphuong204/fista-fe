@@ -96,7 +96,7 @@ export const createCategory=
   };
 
 export const getCategories =
-  ( user, page, limit ) =>
+  ( page, limit ) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
@@ -113,12 +113,12 @@ export const getCategories =
   };
 
   export const deleteCategory =
-  ( _id, user, page, limit) =>
+  ( _id, page, limit) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
 
-      const params = { user, page, limit };
+      const params = { page, limit };
       await apiService.delete(`/categories/${_id}`);
       toast.success("Delete category successful");
 
@@ -134,7 +134,7 @@ export const getCategories =
   };
 
   export const changeCategory =
-  ( {_id, user, name, classification}) =>
+  ({_id, name, classification}) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {

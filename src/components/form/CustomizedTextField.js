@@ -26,6 +26,7 @@ function SmallTextField({ name, ...other }) {
             sx={{
               '&	input': {
                   fontSize: '12px',
+                  textTransform: "capitalize"
               },
               '& label': {
                   fontSize: '12px'
@@ -45,6 +46,7 @@ function SmallTextField({ name, ...other }) {
             sx={{
               '&	input': {
                   fontSize: '12px',
+                  textTransform: "capitalize"
               },
               '& label': {
                   fontSize: '12px'

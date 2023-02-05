@@ -74,6 +74,7 @@ function WalletsList({ currentPageWallets, walletById, page, limit }) {
                     <TableCell style={{fontWeight:"bold"}}>Edit</TableCell>
                     <TableCell style={{fontWeight:"bold"}}>Name</TableCell>
                     <TableCell style={{fontWeight:"bold"}}>Type</TableCell>
+                    <TableCell style={{fontWeight:"bold"}}>Currency</TableCell>
                     <TableCell style={{fontWeight:"bold"}}>Delete</TableCell>
                   </TableRow>
                 </TableHead>
@@ -99,6 +100,9 @@ function WalletsList({ currentPageWallets, walletById, page, limit }) {
                       </TableCell>
                       <TableCell style={{textTransform: "capitalize"}}>
                         {walletById[item]?.classification}
+                      </TableCell>
+                      <TableCell style={{textTransform: "uppercase"}}>
+                        {walletById[item]?.currency}
                       </TableCell>
                       <TableCell>
                         <IconButton edge="end" aria-label="delete" 

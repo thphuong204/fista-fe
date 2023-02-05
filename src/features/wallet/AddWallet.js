@@ -30,6 +30,7 @@ const CreateWalletSchema = yup.object().shape({
 const defaultValues = {
     name: '',
     classification: null,
+    currency: 'vnd'
 };
 
 function AutoCompleteList ({ id, name, children, sourceArray, ...other}) {
@@ -121,7 +122,6 @@ function AddWalletAccordion ({typeArray}) {
                 wallet: name, 
                 classification: classification.name
             }))
-            getWallets(1, 1)
             reset();
             return 
         } catch (error) {
@@ -168,6 +168,7 @@ function AddWalletAccordion ({typeArray}) {
                                                 sourceArray={typeArray}
                                             />
                                             <SmallTextField name="name" label="Name"/>
+                                            <SmallTextField disabled name="currency" label="Currency" value="VND"/>
                                     </Card>
                                 </Grid>
                             </form>

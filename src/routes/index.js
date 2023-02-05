@@ -9,7 +9,6 @@ import ReportPage from "../pages/ReportPage";
 import LoginPage from "../pages/LoginPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import AuthRequire from "./AuthRequire";
-import WalletDetails from "../features/wallet/WalletDetails";
 import AccountPage from "../pages/AccountPage";
 
 function Router() {

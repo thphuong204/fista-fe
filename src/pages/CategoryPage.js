@@ -9,7 +9,6 @@ import {getCategories} from "../features/category/categorySlice";
 
 function CategoryPage() {
   const [page, setPage] = useState(1);
-  const [user] = useState("63bf72b6818c592241a1af58");
   let limit = CATEGORIES_PER_PAGE ;
   
   const { 
@@ -24,8 +23,8 @@ function CategoryPage() {
 
   const dispatch = useDispatch();
     useEffect (() => {
-      dispatch(getCategories( user, page, limit ));
-  }, [page, limit]);
+      dispatch(getCategories( page, limit ));
+  }, [page, limit, dispatch]);
 
   return (
     <Container 

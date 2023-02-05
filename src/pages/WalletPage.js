@@ -7,8 +7,6 @@ import {getWallets} from '../features/wallet/walletSlice'
 import WalletsList from '../features/wallet/WalletsList';
 import PaginationHandling from "../components/PaginationHandling";
 
-const accessToken = localStorage.getItem('accessToken');
-
 function WalletPage() {
   const [page, setPage] = useState(1);
   let limit = WALLETS_PER_PAGE 
@@ -25,7 +23,7 @@ function WalletPage() {
 
   const dispatch = useDispatch();
     useEffect (() => {
-      dispatch(getWallets( accessToken, page, limit ));
+      dispatch(getWallets( page, limit ));
   }, [page, limit, dispatch])
 
   return (
@@ -40,7 +38,6 @@ function WalletPage() {
       }}
     >
       <WalletsList 
-        accessToken={accessToken}
         currentPageWallets={currentPageWallets} 
         walletById={walletById} 
         page={page} 

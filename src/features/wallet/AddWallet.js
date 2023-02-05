@@ -15,7 +15,6 @@ import {
 } from '@mui/material';
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { createWallet, getWallets } from './walletSlice';
 import { useForm, FormProvider, useFormContext, Controller } from "react-hook-form";
@@ -69,7 +68,8 @@ function AutoCompleteList ({ id, name, children, sourceArray, ...other}) {
                                     sx={{
                                         '&	input': {
                                             fontSize: '12px',
-                                            minWidth: '90px'
+                                            minWidth: '90px',
+                                            textTransform: "capitalize"
                                         },
                                         '& label': {
                                             fontSize: '12px'
@@ -94,9 +94,8 @@ function AutoCompleteList ({ id, name, children, sourceArray, ...other}) {
     )
 }
 
-function AddWalletAccordion ({accessToken}) {
+function AddWalletAccordion ({typeArray}) {
     const dispatch = useDispatch();
-    const now = new Date()
 
     const methods = useForm({
         resolver: yupResolver(CreateWalletSchema),
@@ -119,11 +118,10 @@ function AddWalletAccordion ({accessToken}) {
             const {name, classification} = data
 
             await dispatch(createWallet({ 
-                accessToken: accessToken,
                 wallet: name, 
                 classification: classification.name
             }))
-            getWallets(accessToken, 1, 1)
+            getWallets(1, 1)
             reset();
             return 
         } catch (error) {
@@ -132,20 +130,7 @@ function AddWalletAccordion ({accessToken}) {
             setError("responseError", error);
         }
     };
-
-    let typeArray =[
-        {
-            _id: "1", 
-            name: "asset"
-        }, {
-            _id: "2", 
-            name: "cash/bank"
-        }, {
-            _id: "3", 
-            name: "receivable/liability"
-        },
-    ]
-
+    
     return (
         <div style={{
                 width:"100%",

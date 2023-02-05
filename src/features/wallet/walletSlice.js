@@ -56,8 +56,8 @@ const slice = createSlice({
     deleteWalletSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-      const { wallets, total } = action.payload;
-      wallets.forEach((wallet) => {
+      const { items, total } = action.payload;
+      items.forEach((wallet) => {
         state.walletById[wallet._id] = wallet;
         if (!state.currentPageWallets.includes(wallet._id))
           state.currentPageWallets.push(wallet._id);
@@ -69,9 +69,8 @@ const slice = createSlice({
       state.isLoading = false;
       state.error = null;
       const changedWallet = action.payload;
-      if (state.currentPageWallets.length % WALLETS_PER_PAGE === 0)
-      state.walletById[changedWallet._id].content = changedWallet.content;
-      state.walletById[changedWallet._id].image = changedWallet.image;
+      state.walletById[changedWallet._id].name = changedWallet.name;
+      state.walletById[changedWallet._id].classification = changedWallet.classification;
     },
   },
 });
@@ -79,12 +78,11 @@ const slice = createSlice({
 export default slice.reducer;
 
 export const createWallet =
-({ accessToken, wallet, classification }) =>
+({ wallet, classification }) =>
 async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
     const response = await apiService.post("/wallets", {
-      "accessToken": accessToken,
       "name": wallet,
       "classification": classification,
     });
@@ -96,12 +94,11 @@ async (dispatch) => {
   }
 };
 
-export const getWallets =
-( accessToken, page, limit ) =>
+export const getWallets = ( page, limit ) =>
 async (dispatch) => {
   dispatch(slice.actions.startLoading());
   try {
-    const params = { accessToken, page, limit };
+    const params = { page, limit };
     const response = await apiService.get(`/wallets`, {
       params,
     });
@@ -113,19 +110,14 @@ async (dispatch) => {
   }
 };
 
-  export const deleteWallet =
-  ( _id, accessToken, page, limit) =>
+  export const deleteWallet = (_id) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-
-      const params = { accessToken, page, limit };
       await apiService.delete(`/wallets/${_id}`);
       toast.success("Delete wallet successful");
 
-      const response = await apiService.get(`/wallets`, {
-        params,
-      })
+      const response = await apiService.get(`/wallets`)
       dispatch(slice.actions.resetWallets());
       dispatch(slice.actions.deleteWalletSuccess(response.data));
     } catch (error) {
@@ -135,16 +127,13 @@ async (dispatch) => {
   };
 
   export const changeWallet =
-  ( {wallet, category, date, amount, description, _id}) =>
+  ( { _id, name, classification }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
       const response = await apiService.put(`/wallets/${_id}`, {
-        "wallet": wallet,
-        "category": category,
-        "date": date,
-        "amount": amount,
-        "description": description
+        "name": name,
+        "classification": classification
       });
       console.log("change wallet,", response);
       dispatch(slice.actions.updateWalletSuccess(response.data));

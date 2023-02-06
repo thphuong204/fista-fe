@@ -44,9 +44,13 @@ function SmallTextField({ name, ...other }) {
             helperText={error?.message}
             {...other}
             sx={{
+              
               '&	input': {
                   fontSize: '12px',
-                  textTransform: "capitalize"
+                  textTransform: "capitalize",
+                  backgroundColor: other?.backgroundColor,
+                  boxShadow: other?.boxShadow,
+                  borderRadius: other?.borderRadius
               },
               '& label': {
                   fontSize: '12px'

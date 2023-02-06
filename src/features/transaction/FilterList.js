@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from "react-redux";
 import { styled, alpha } from '@mui/material/styles';
 import { 
     Grid, 
@@ -16,6 +17,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DatePicker from 'react-date-picker';
 import { SmallButton } from '../../components/CustomizedButton';
+import {getTransactions} from './transactionSlice';
 
 const Search = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -108,9 +110,7 @@ const AccordionSummary = styled(MuiAccordionSummary)(({ theme }) => ({
   },
 }));
 
-
-
-function WalletOptionBox({setACValue, walletLists}) {
+function WalletOptionBox({setWalletOptValue, walletLists}) {
   
   return (
     <Autocomplete
@@ -118,7 +118,7 @@ function WalletOptionBox({setACValue, walletLists}) {
       id="combo-box"
       options={walletLists.map((option)=> option.name)}
       defaultValue={walletLists[0].name}
-      onChange={(event, value) => setACValue(value)}
+      onChange={(event, value) => setWalletOptValue(value)}
       sx={{ 
         width: "100%",
         '& .MuiFilledInput-root': {
@@ -144,18 +144,38 @@ function WalletOptionBox({setACValue, walletLists}) {
   );
 }
 
-function FilterList ({ walletById, currentPageWallets }) {
-    const now = new Date()
-    const [valueFirst, onChangeFirst] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
-    const [valueSecond, onChangeSecond] = useState(new Date());
-    const [acValue, setACValue] = useState("All");
-    
+function FilterList ({ 
+  walletById, 
+  currentPageWallets, 
+  valueFirst,
+  onChangeFirst,
+  valueSecond,
+  onChangeSecond,
+  walletOptValue,
+  setWalletOptValue,
+  searchValue, 
+  setSearchValue,
+  page, 
+  limit 
+}) {
     const walletArray =[{name: "All"}];
       currentPageWallets.forEach((id) => {
           walletArray.push(
             walletById[id]
           )
     })
+
+    const dispatch = useDispatch();
+    const handleFilter = (e) => {
+      dispatch(getTransactions({ 
+        wallet: walletOptValue, 
+        fromDate: valueFirst, 
+        toDate: valueSecond, 
+        description: searchValue,
+        page, 
+        limit 
+      }))
+    }
 
      return (
           <div
@@ -178,7 +198,7 @@ function FilterList ({ walletById, currentPageWallets }) {
               </AccordionSummary>
               <AccordionDetails style={{ padding: "8px 16px" }} className={"classes.details"}>
                   <SelectingContainer>
-                      <WalletOptionBox setACValue={setACValue} walletLists={walletArray}/>
+                      <WalletOptionBox setWalletOptValue={setWalletOptValue} walletLists={walletArray}/>
                       <Search style={{width: "100%", margin: "0"}}>
                           <SearchIconWrapper>
                             <SearchIcon />
@@ -186,6 +206,7 @@ function FilterList ({ walletById, currentPageWallets }) {
                           <StyledInputBase
                             placeholder="Search…"
                             inputProps={{ 'aria-label': 'search' }}
+                            onChange= {setSearchValue}
                           />
                       </Search>
                   </SelectingContainer>
@@ -211,7 +232,7 @@ function FilterList ({ walletById, currentPageWallets }) {
                   </SelectingContainer>
                 </AccordionDetails>
                 <AccordionActions>
-                  <SmallButton text={"Filter"}/>
+                  <SmallButton text={"Filter"} onClick={() => handleFilter()}/>
                 </AccordionActions>
               </Accordion>
           </div>

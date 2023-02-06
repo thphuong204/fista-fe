@@ -111,11 +111,11 @@ export const createTransaction =
     }
   };
 
-export const getTransactions = ( page, limit ) =>
+export const getTransactions = ({ wallet, category, fromDate, toDate, description, page, limit }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
-      const params = { page, limit };
+      const params = { wallet, category, fromDate, toDate, description, page, limit };
       const response = await apiService.get(`/transs`, {
         params,
       });
@@ -128,7 +128,7 @@ export const getTransactions = ( page, limit ) =>
   };
 
   export const deleteTransaction =
-  ( _id, page, limit) =>
+  ({ _id, page, limit }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
@@ -149,7 +149,7 @@ export const getTransactions = ( page, limit ) =>
   };
 
   export const changeTransaction =
-  ( {wallet, category, date, amount, description, _id}) =>
+  ({ wallet, category, date, amount, description, _id }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {

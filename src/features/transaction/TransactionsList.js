@@ -74,8 +74,12 @@ function TransactionsByDate ({date, transactionsArray}) {
 }
 
 function TransactionsList() {
-
+  const now = new Date()
   const [page, setPage] = useState(1);
+  const [valueFirst, onChangeFirst] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
+  const [valueSecond, onChangeSecond] = useState(new Date());
+  const [walletOptValue, setWalletOptValue] = useState("All");
+  const [searchValue, setSearchValue] = useState("");
   const [type, setType] = useState();
   let limit = TRANSACTIONS_PER_PAGE 
   const { 
@@ -107,8 +111,15 @@ function TransactionsList() {
   const dispatch = useDispatch();
     
   useEffect (() => {
-      dispatch(getTransactions( page, limit ));
-  }, [page, limit, type, dispatch])
+      dispatch(getTransactions({ 
+        wallet: walletOptValue, 
+        fromDate: valueFirst, 
+        toDate: valueSecond, 
+        description: searchValue,
+        page, 
+        limit 
+      }));
+  }, [ walletOptValue, valueFirst,  valueSecond, searchValue, page, limit, type, dispatch ])
 
   useEffect (() => {
     dispatch(getWallets( page, "all" ));
@@ -197,6 +208,16 @@ function TransactionsList() {
           <FilterList 
             walletById={walletById}
             currentPageWallets={currentPageWallets}
+            valueFirst={valueFirst}
+            onChangeFirst={onChangeFirst}
+            valueSecond={valueSecond}
+            onChangeSecond={onChangeSecond}
+            walletOptValue={walletOptValue}
+            setWalletOptValue={setWalletOptValue}
+            searchValue={searchValue}
+            setSearchValue={setSearchValue}
+            page={page}
+            limit={limit}
           />
         </Grid>
       </Box>

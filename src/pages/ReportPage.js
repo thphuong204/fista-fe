@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {getWallets} from '../features/wallet/walletSlice';
-import {getCategories} from '../features/category/categorySlice';
+import {getReports} from '../features/report/reportSlice';
 import { Box, Container, Stack, Grid } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import LoadingScreen from "../components/LoadingScreen";
@@ -9,27 +9,42 @@ import { FilterList } from "../features/transaction/FilterList";
 import { PieChart, BarChart } from "../features/report";
 
 function ReportPage() {
-  const [page, setPage] = useState(1);
-  const [user] = useState("63bf72b6818c592241a1af58");
+  const now = new Date()
+  const [wallet] = useState("All");
+  const [fromDate] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
+  const [toDate] = useState(new Date());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  
+  const dispatch = useDispatch();
+
+  useEffect(()=> {
+    setLoading(false);
+    dispatch(getWallets( 1, "all" ));
+    dispatch(getReports({ wallet, fromDate, toDate }));
+  },[])
+
   const { 
     walletById, 
     currentPageWallets
   } = useSelector(
     (state) => state.wallet
   );
-  
-  const dispatch = useDispatch();
-  useEffect (() => {
-    dispatch(getWallets( user, page, "all" ));
-    dispatch(getCategories( user, page, "all" ));
-  }, [])
 
-  useEffect(()=> {
-    setLoading(false)
-  },[])
+  const { 
+    categoryById, 
+    currentPageCategories
+  } = useSelector(
+    (state) => state.category
+  );
 
+  const { 
+    groupByCategory, 
+    groupByMonth,
+    groupByWeek
+  } = useSelector(
+    (state) => state.report
+  );
   
 
   const theme = useTheme();
@@ -49,7 +64,6 @@ function ReportPage() {
               <Grid item xs={12}>
                 <BarChart
                   title="Income vs Expense"
-                  subheader="(+43%) than last year"
                   chartLabels={[
                     '01/01/2003',
                     '02/01/2003',

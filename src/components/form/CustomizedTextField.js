@@ -48,9 +48,9 @@ function SmallTextField({ name, ...other }) {
               '&	input': {
                   fontSize: '12px',
                   textTransform: "capitalize",
-                  backgroundColor: other?.backgroundColor,
-                  boxShadow: other?.boxShadow,
-                  borderRadius: other?.borderRadius
+                  backgroundColor: other?.background_color,
+                  boxShadow: other?.box_shadow,
+                  borderRadius: other?.border_radius
               },
               '& label': {
                   fontSize: '12px'

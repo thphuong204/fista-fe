@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import { 
   Box,
@@ -34,6 +33,7 @@ function TransactionsByDate ({date, transactionsArray}) {
         style={{ 
         margin: "30px 0 0", 
         padding: "0 16px",
+        fontSize: "14px",
         borderLeft:"none", 
         borderRight:"none",
         backgroundColor: "#fffaf0"
@@ -48,21 +48,21 @@ function TransactionsByDate ({date, transactionsArray}) {
             borderBottom: "1px solid #a0a0a0" 
           }}
         >
-          <Typography>{date}</Typography>
+          <Typography style={{fontSize: "14px"}}>{date}</Typography>
         </Box>
         <Box>
           {transactionsArray?.map((transObject, i) => {
             return (
-              <Grid container spacing={2} style={{ width: "100%", margin:"0", padding: "2px 0"}}
+              <Grid container spacing={2} style={{ width: "100%", margin:"0", padding: "2px 0" }}
                 key={transObject._id}
               >
-                  <Grid item xs={2} style={{wordBreak:"break-all"}}>
+                  <Grid item xs={3} style={{wordBreak:"break-all"}}>
                     {`${transObject?.category?.name}`}
                   </Grid > 
                   <Grid item xs={6} style={{wordBreak:"break-word"}}>
                     {`${transObject?.description}`}
                   </Grid>
-                  <Grid item xs={4} style={{textAlign:"right"}}>
+                  <Grid item xs={3} style={{padding: 0, textAlign:"right", wordBreak:"break-word"}}>
                     {fNumber(transObject.amount)}
                   </Grid>
               </Grid>
@@ -76,12 +76,21 @@ function TransactionsByDate ({date, transactionsArray}) {
 function TransactionsList() {
   const now = new Date()
   const [page, setPage] = useState(1);
-  const [valueFirst, onChangeFirst] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
-  const [valueSecond, onChangeSecond] = useState(new Date());
-  const [walletOptValue, setWalletOptValue] = useState("All");
-  const [searchValue, setSearchValue] = useState("");
+  const [valueFirst,
+     onChangeFirst
+    ] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
+  const [valueSecond, 
+    onChangeSecond
+  ] = useState(new Date());
+  const [walletOptValue, 
+    setWalletOptValue
+  ] = useState("All");
+  const [searchValue, 
+    setSearchValue
+  ] = useState("");
   const [type, setType] = useState();
   let limit = TRANSACTIONS_PER_PAGE 
+
   const { 
     transactionByDate, 
     isLoading, 
@@ -119,7 +128,11 @@ function TransactionsList() {
         page, 
         limit 
       }));
-  }, [ walletOptValue, valueFirst,  valueSecond, searchValue, page, limit, type, dispatch ])
+  }, [ 
+    walletOptValue, valueFirst,  
+    valueSecond, 
+    searchValue, 
+    page, limit, type, dispatch ])
 
   useEffect (() => {
     dispatch(getWallets( page, "all" ));
@@ -178,6 +191,7 @@ function TransactionsList() {
     <div 
       style={{ 
         width: "100%", 
+        maxWidth: "550px",
         display: "flex", 
         flexWrap: "wrap",
         justifyContent: "center", 
@@ -185,7 +199,7 @@ function TransactionsList() {
       }}
     >
       <Box 
-        sx={{ flexGrow: 1 }}
+        sx={{ width: "100%" }}
         style={{
           display: "flex",
           flexWrap: "wrap",
@@ -209,12 +223,12 @@ function TransactionsList() {
             walletById={walletById}
             currentPageWallets={currentPageWallets}
             valueFirst={valueFirst}
-            onChangeFirst={onChangeFirst}
             valueSecond={valueSecond}
-            onChangeSecond={onChangeSecond}
             walletOptValue={walletOptValue}
-            setWalletOptValue={setWalletOptValue}
             searchValue={searchValue}
+            onChangeFirst={onChangeFirst}
+            onChangeSecond={onChangeSecond}
+            setWalletOptValue={setWalletOptValue}
             setSearchValue={setSearchValue}
             page={page}
             limit={limit}
@@ -222,7 +236,7 @@ function TransactionsList() {
         </Grid>
       </Box>
       <Box 
-        sx={{ flexGrow: 1 }}
+        sx={{ width: "100%"}}
         style={{
           border: "1px solid #f6f6f6",
           borderRadius: "10px",
@@ -230,7 +244,7 @@ function TransactionsList() {
         }}
       >
         <BackgroundFirstLayer>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <BackgroundSecondLayer 
               style={{ 
                 borderTopRightRadius:"10px",
@@ -268,16 +282,16 @@ function TransactionsList() {
               >
                   <Grid container spacing={2}>
                     <Grid item xs={6} md={4}>
-                      <Typography>Inflow</Typography>
+                      <Typography style={{fontSize: "14px"}}>Inflow</Typography>
                     </Grid>
                     <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
-                      <Typography>{fNumber(50000000)}</Typography>
+                      <Typography style={{fontSize: "14px"}}>{fNumber(50000000)}</Typography>
                     </Grid>
                     <Grid item xs={6} md={4}>
-                      <Typography>Outflow</Typography>
+                      <Typography style={{fontSize: "14px"}}>Outflow</Typography>
                     </Grid>
                     <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
-                      <Typography>{fNumber(-10000000)}</Typography>
+                      <Typography style={{fontSize: "14px"}}>{fNumber(-10000000)}</Typography>
                     </Grid>
                   </Grid>
               </Container>

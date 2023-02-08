@@ -55,7 +55,7 @@ export default function PieChart({ title, subheader, chartColors, chartData, ...
                     }
             },
         },
-        labels: ['a','b','c','d'],
+        labels: chartData.map(i => i.label),
         legend: { 
             floating: true, 
             show: true,

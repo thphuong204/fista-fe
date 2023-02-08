@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {getWallets} from '../features/wallet/walletSlice';
+import {getCategories} from '../features/category/categorySlice';
 import {getReports} from '../features/report/reportSlice';
 import { Box, Container, Stack, Grid } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
@@ -21,6 +22,7 @@ function ReportPage() {
   useEffect(()=> {
     setLoading(false);
     dispatch(getWallets( 1, "all" ));
+    dispatch(getCategories( 1, "all" ));
     dispatch(getReports({ wallet, fromDate, toDate }));
   },[])
 
@@ -46,6 +48,38 @@ function ReportPage() {
     (state) => state.report
   );
   
+  const expenseCategoriesArray = [];
+  const incomeCategoriesArray = [];
+
+  if (groupByCategory?.length > 0) {
+    groupByCategory.forEach((item) => {
+      if (categoryById[item._id].classification === "expense") {
+        const tmpItem = {
+          _id: item._id,
+          label: categoryById[item._id].name,
+          value: -item.totalAmount,
+          classification: "expense"
+        };
+        expenseCategoriesArray.push(tmpItem)
+      }
+    })
+  }
+
+  if (groupByCategory?.length > 0) {
+    groupByCategory.forEach((item) => {
+      if (categoryById[item._id].classification === "income") {
+        const tmpItem = {
+          _id: item._id,
+          label: categoryById[item._id].name,
+          value: item.totalAmount,
+          classification: "income"
+        };
+        incomeCategoriesArray.push(tmpItem)
+      }
+    })
+  }
+
+  console.log("expenseCategoriesArray", expenseCategoriesArray)
 
   const theme = useTheme();
 
@@ -99,12 +133,7 @@ function ReportPage() {
               <Grid item xs={12} md={6}>
                 <PieChart
                   title="Income"
-                  chartData={[
-                    { label: 'America', value: 4344 },
-                    { label: 'Asia', value: 5435 },
-                    { label: 'Europe', value: 1443 },
-                    { label: 'Africa', value: 2443 },
-                  ]}
+                  chartData={incomeCategoriesArray}
                   chartColors={[
                     theme.palette.primary.main,
                     theme.palette.info.main,
@@ -116,12 +145,7 @@ function ReportPage() {
               <Grid item xs={12} md={6}>
                 <PieChart
                   title="Expense"
-                  chartData={[
-                    { label: 'America', value: 4344 },
-                    { label: 'Asia', value: 5435 },
-                    { label: 'Europe', value: 1443 },
-                    { label: 'Africa', value: 4443 },
-                  ]}
+                  chartData={expenseCategoriesArray}
                   chartColors={[
                     theme.palette.primary.main,
                     theme.palette.info.main,

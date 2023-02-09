@@ -115,7 +115,6 @@ function AddWalletAccordion ({typeArray}) {
     const onSubmit = async (data) => {
        
         try {
-            console.log("data", data)
             const {name, classification} = data
 
             await dispatch(createWallet({ 
@@ -126,7 +125,6 @@ function AddWalletAccordion ({typeArray}) {
             return 
         } catch (error) {
             reset();
-            console.log("error", error)
             setError("responseError", error);
         }
     };

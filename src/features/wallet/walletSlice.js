@@ -135,7 +135,6 @@ async (dispatch) => {
         "name": name,
         "classification": classification
       });
-      console.log("change wallet,", response);
       dispatch(slice.actions.updateWalletSuccess(response.data));
       toast.success("Update wallet successfully");
     } catch (error) {

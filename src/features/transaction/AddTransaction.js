@@ -194,10 +194,8 @@ function AddTransactionAccordion ({
     const onSubmit = async (data) => {
        
         try {
-            console.log("data", data)
             const {fromWallet, toWallet, fromCategory, toCategory, date, amount, description} = data
             let parseAmount = parseInt(amount.replaceAll(",",""));
-            console.log("parseAmount", parseAmount)
             
             if (fromCategory?._id && fromWallet?._id) {
                 dispatch(createTransaction({ 
@@ -223,7 +221,6 @@ function AddTransactionAccordion ({
             return 
         } catch (error) {
             reset();
-            console.log("error", error)
             setError("responseError", error);
         }
     };

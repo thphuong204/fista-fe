@@ -34,7 +34,6 @@ const slice = createSlice({
         state.error = null;
   
         const { groupByCategory, groupByMonth, groupByWeek } = action.payload;
-        console.log("action.payload", action.payload)
         state.groupByCategory = groupByCategory
         state.groupByMonth = groupByMonth
         state.groupByWeek = groupByWeek
@@ -49,7 +48,6 @@ const slice = createSlice({
     dispatch(slice.actions.startLoading());
     try {
       const params = { wallet, fromDate, toDate };
-      console.log("params", params)
       const response = await apiService.get(`/report`, {
         params,
       });

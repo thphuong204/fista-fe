@@ -6,7 +6,7 @@ import {getReports} from '../features/report/reportSlice';
 import { Box, Container, Stack, Grid } from "@mui/material";
 import { useTheme } from '@mui/material/styles';
 import LoadingScreen from "../components/LoadingScreen";
-import { FilterList } from "../features/transaction/FilterList";
+import { ReportFilterList } from "../features/report/ReportFilterList";
 import { PieChart, BarChart } from "../features/report";
 
 function ReportPage() {
@@ -78,9 +78,62 @@ function ReportPage() {
       }
     })
   }
+  
+  const revisedGroupByWeek = [];
+  const revisedGroupByMonth= [];
+  if (groupByMonth?.length >0) {
+    groupByMonth.map((item) => {
+      let tmpIncomeAmount = 0;
+      let tmpExpenseAmount = 0;
+      const tmpItem = {
+        month: item?._id,
+        totalAmount: item?.totalAmount
+      }
+      item.transactions.map((transaction) => {
 
-  console.log("expenseCategoriesArray", expenseCategoriesArray)
+        if (categoryById[transaction.category]?.classification === "income") {
+         tmpIncomeAmount += parseFloat(transaction.amount);
+        }
+        if (categoryById[transaction.category]?.classification === "expense") {
+         tmpExpenseAmount += parseFloat(transaction.amount);
+        }
+        
+      })
+      tmpItem.income = tmpIncomeAmount;
+      tmpItem.expense = tmpExpenseAmount
+      revisedGroupByMonth.push(tmpItem)
+    })
+  }
+  if (groupByWeek?.length >0) {
+    groupByWeek.map((item) => {
+      let tmpIncomeAmount = 0;
+      let tmpExpenseAmount = 0;
+      const tmpItem = {
+        week: item?._id,
+        totalAmount: item?.totalAmount
+      }
+      item.transactions.map((transaction) => {
 
+        if (categoryById[transaction.category]?.classification === "income") {
+         tmpIncomeAmount += parseFloat(transaction.amount);
+        }
+        if (categoryById[transaction.category]?.classification === "expense") {
+         tmpExpenseAmount += parseFloat(transaction.amount);
+        }
+        
+      })
+      tmpItem.income = tmpIncomeAmount;
+      tmpItem.expense = tmpExpenseAmount
+      revisedGroupByWeek.push(tmpItem)
+    })
+  }
+
+  const label = revisedGroupByMonth.map((item) => item.month.toString())
+  const expenseData = revisedGroupByMonth.map((item) => -item.expense)
+  const incomeData = revisedGroupByMonth.map((item) => item.income)
+  console.log("revisedGroupByMonth after", revisedGroupByMonth)
+  console.log("expenseData after", expenseData)
+  console.log("incomeData after", incomeData)
   const theme = useTheme();
 
   return (
@@ -92,31 +145,19 @@ function ReportPage() {
           ) : (
             <Grid container spacing={3}>
               <Grid container item xs={12} md={12} style={{ justifyContent: "center" }}>
-                <FilterList walletById={walletById} currentPageWallets={currentPageWallets} />
+                <ReportFilterList walletById={walletById} currentPageWallets={currentPageWallets} />
               </Grid>
 
               <Grid item xs={12}>
                 <BarChart
                   title="Income vs Expense"
-                  chartLabels={[
-                    '01/01/2003',
-                    '02/01/2003',
-                    '03/01/2003',
-                    '04/01/2003',
-                    '05/01/2003',
-                    '06/01/2003',
-                    '07/01/2003',
-                    '08/01/2003',
-                    '09/01/2003',
-                    '10/01/2003',
-                    '11/01/2003',
-                  ]}
+                  chartLabels={label}
                   chartData={[
                     {
                       name: 'Expense',
                       type: 'column',
                       fill: 'solid',
-                      data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30],
+                      data: [incomeData],
                     },
                     {
                       name: 'Income',
@@ -124,7 +165,7 @@ function ReportPage() {
                       fill: {
                         opacity: [0.5, 0.25, 0.5],
                       },
-                      data: [44, 55, 41, 67, 22, 43, 21, 41, 56, 27, 43],
+                      data: [expenseData],
                     }
                   ]}
                 />

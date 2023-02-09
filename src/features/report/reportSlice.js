@@ -32,11 +32,12 @@ const slice = createSlice({
       getReportsSuccess(state, action) {
         state.isLoading = false;
         state.error = null;
-  
-        const { groupByCategory, groupByMonth, groupByWeek } = action.payload;
+        console.log("action.payload",action.payload)
+        const { groupByCategory, groupByMonth, groupByWeek, groupByDay } = action.payload;
         state.groupByCategory = groupByCategory
         state.groupByMonth = groupByMonth
         state.groupByWeek = groupByWeek
+        state.groupByDay = groupByDay
       },
     },
   });

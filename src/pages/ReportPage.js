@@ -43,7 +43,8 @@ function ReportPage() {
   const { 
     groupByCategory, 
     groupByMonth,
-    groupByWeek
+    groupByWeek,
+    groupByDay
   } = useSelector(
     (state) => state.report
   );
@@ -81,6 +82,7 @@ function ReportPage() {
   
   const revisedGroupByWeek = [];
   const revisedGroupByMonth= [];
+  const revisedGroupByDay = [];
   if (groupByMonth?.length >0) {
     groupByMonth.map((item) => {
       let tmpIncomeAmount = 0;
@@ -127,11 +129,35 @@ function ReportPage() {
       revisedGroupByWeek.push(tmpItem)
     })
   }
+  if (groupByDay?.length >0) {
+    groupByDay.map((item) => {
+      let tmpIncomeAmount = 0;
+      let tmpExpenseAmount = 0;
+      const tmpItem = {
+        day: item?._id,
+        totalAmount: item?.totalAmount
+      }
+      item.transactions.map((transaction) => {
 
-  const label = revisedGroupByMonth.map((item) => item.month.toString())
-  const expenseData = revisedGroupByMonth.map((item) => -item.expense)
-  const incomeData = revisedGroupByMonth.map((item) => item.income)
-  console.log("revisedGroupByMonth after", revisedGroupByMonth)
+        if (categoryById[transaction.category]?.classification === "income") {
+         tmpIncomeAmount += parseFloat(transaction.amount);
+        }
+        if (categoryById[transaction.category]?.classification === "expense") {
+         tmpExpenseAmount += parseFloat(transaction.amount);
+        }
+        
+      })
+      tmpItem.income = tmpIncomeAmount;
+      tmpItem.expense = tmpExpenseAmount
+      revisedGroupByDay.push(tmpItem)
+    })
+  }
+
+  const label = revisedGroupByDay.map((item) => item.day?.toString())
+  const expenseData = revisedGroupByDay.map((item) => -item.expense)
+  const incomeData = revisedGroupByDay.map((item) => item.income)
+  console.log("revisedGroupByDay after", revisedGroupByDay)
+  console.log("label", label)
   console.log("expenseData after", expenseData)
   console.log("incomeData after", incomeData)
   const theme = useTheme();

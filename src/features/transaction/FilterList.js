@@ -152,6 +152,8 @@ function WalletOptionBox({id, name, walletLists}) {
                         {...params} 
                         variant="filled"
                         label="Wallets" 
+                        error={!!error}
+                        helperText={error?.message}
                         sx={{
                           '&	input': {
                               fontSize: "12px",
@@ -181,10 +183,6 @@ function FilterList ({
   valueSecond,
   walletOptValue,
   searchValue, 
-  onChangeFirst,
-  onChangeSecond,
-  setWalletOptValue,
-  setSearchValue,
   page, 
   limit
 }) {
@@ -192,7 +190,6 @@ function FilterList ({
     const FilterTransSchema = yup.object().shape({
       fromDate: yup.string().required("From Date is required"),
       toDate: yup.string().required("To Date is required"),
-      
     })
     
     const defaultFilterValues = {
@@ -223,6 +220,7 @@ function FilterList ({
           )
     })
 
+    console.log("walletArray", walletArray)
     const dispatch = useDispatch();
 
     const handleFilter = async (e) => {
@@ -230,7 +228,7 @@ function FilterList ({
       const {wallet, fromDate, toDate, description} = e
       try {
         dispatch(getTransactions({ 
-          wallet: wallet._id, 
+          wallet: wallet?._id, 
           fromDate, 
           toDate,
           description,

@@ -177,13 +177,23 @@ function ReportPage() {
               <Grid item xs={12}>
                 <BarChart
                   title="Income vs Expense"
-                  chartLabels={label}
+                  chartLabels={[ 
+                    '01/01/2003',
+                  '02/01/2003',
+                  '03/01/2003',
+                  '04/01/2003',
+                  '05/01/2003',
+                  '06/01/2003',
+                  '07/01/2003',
+                  '08/01/2003',
+                  '09/01/2003',
+                  '10/01/2003']}
                   chartData={[
                     {
                       name: 'Expense',
                       type: 'column',
                       fill: 'solid',
-                      data: [incomeData],
+                      data: expenseData,
                     },
                     {
                       name: 'Income',
@@ -191,7 +201,7 @@ function ReportPage() {
                       fill: {
                         opacity: [0.5, 0.25, 0.5],
                       },
-                      data: [expenseData],
+                      data: incomeData,
                     }
                   ]}
                 />

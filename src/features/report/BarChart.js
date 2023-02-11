@@ -24,24 +24,44 @@ export default function BarChart({ title, subheader, chartLabels, chartData, ...
             }
         }
     },
-    plotOptions: { bar: { columnWidth: '16%' } },
+    plotOptions: { bar: { columnWidth: '50%' } },
     fill: { type: chartData.map((i) => i.fill) },
     labels: chartLabels,
-    xaxis: { type: 'datetime' },
+    xaxis: { type: 'number' },
+    yaxis: {
+      title: {
+        text: '$ (thousands)',
+        style: {
+          color: '#008FFB',
+        }
+      },
+      axisTicks: {
+        show: true,
+      },
+      axisBorder: {
+        show: true,
+        color: '#008FFB'
+      },
+      labels: {
+        style: {
+          colors: '#008FFB',
+        }
+      },
+    },
     tooltip: {
       shared: true,
       intersect: false,
       y: {
         formatter: (y) => {
           if (typeof y !== 'undefined') {
-            return `${y.toFixed(0)} visits`;
+            return `${y.toFixed(0)}`;
           }
           return y;
         },
       },
     },
   };
-
+  console.log("chartOptions", chartOptions)
   return (
     <Card {...other}>
       <CardHeader title={title} subheader={subheader} />

@@ -212,7 +212,7 @@ function ReportFilterList ({
               display: "flex", 
               flexWrap: "wrap", 
               justifyContent: "center",
-              margin: "20px 0"
+              margin: "50px 0 20px"
             }}
           >
             <Accordion style={{ width:"100%", backgroundColor:"#fffaf0" }}>

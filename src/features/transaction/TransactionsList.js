@@ -6,8 +6,11 @@ import {
   Grid, 
   List, 
   Typography, 
-  Container
+  Container, 
+  IconButton
 } from '@mui/material';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {getTransactions} from './transactionSlice';
 import {getWallets} from '../wallet/walletSlice';
 import {getCategories} from '../category/categorySlice';
@@ -15,7 +18,10 @@ import { TRANSACTIONS_PER_PAGE } from "../../app/config";
 import PaginationHandling from "../../components/PaginationHandling";
 import { FilterList } from "./FilterList";
 import { AddTransactionAccordion } from "./AddTransaction";
+import { TransactionModal } from "./TransactionModal";
 import { fNumber } from '../../utils/formatNumber';
+import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -26,7 +32,9 @@ const BackgroundSecondLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.primary.darker,
 }));
 
-function TransactionsByDate ({date, transactionsArray}) {
+function TransactionsByDate ({date, transactionsArray, handleOpenModal, handleCloseModal, setChosedId}) {
+  
+
   return (
       <div 
         className="transactionByDate"
@@ -56,14 +64,29 @@ function TransactionsByDate ({date, transactionsArray}) {
               <Grid container spacing={2} style={{ width: "100%", margin:"0", padding: "2px 0" }}
                 key={transObject._id}
               >
-                  <Grid item xs={3} style={{wordBreak:"break-all"}}>
+                  <Grid item xs={3} style={{padding:0, wordBreak:"break-all"}}>
                     {`${transObject?.category?.name}`}
                   </Grid > 
-                  <Grid item xs={6} style={{wordBreak:"break-word"}}>
+                  <Grid item xs={4} style={{padding: 0, wordBreak:"break-word"}}>
                     {`${transObject?.description}`}
                   </Grid>
                   <Grid item xs={3} style={{padding: 0, textAlign:"right", wordBreak:"break-word"}}>
                     {fNumber(transObject.amount)}
+                  </Grid>
+                  <Grid item xs={2} style={{ padding: 0, display:"flex", paddingLeft:"4px", justifyContent: "right"}}>
+                    <IconButton edge="end" aria-label="change" style={{padding: "2px", maxHeight: "14px", fontSize: "14px"}}
+                            onClick={()=> {
+                            handleOpenModal();
+                          }}>
+                            <EditIcon style={{padding: 0, maxHeight:"14px"}}/>
+                    </IconButton>
+                    <IconButton edge="end" aria-label="delete" style={{padding: "2px", maxHeight: "14px", fontSize: "14px"}}
+                          // onClick={() => 
+                          //   handleDeleteWallet(item)
+                          // }
+                        >
+                          <DeleteIcon style={{padding: 0, maxHeight:"14px"}}/>
+                    </IconButton>
                   </Grid>
               </Grid>
             );
@@ -74,8 +97,14 @@ function TransactionsByDate ({date, transactionsArray}) {
 }
 
 function TransactionsList() {
+
+  // const [searchParams] = useSearchParams();
+  // console.log("searchParams", searchParams);
+
+  // const pageParam = searchParams.get('page')
+  const [page, setPage] = useState( 1);
+
   const now = new Date()
-  const [page, setPage] = useState(1);
   const [valueFirst,
      onChangeFirst
     ] = useState(new Date(now.getFullYear(), now.getMonth(), 1));
@@ -91,6 +120,13 @@ function TransactionsList() {
   const [type, setType] = useState();
   let limit = TRANSACTIONS_PER_PAGE 
 
+  
+
+  const [openUpdate, setOpenUpdate] = React.useState(false);
+  const handleOpenModal = () => setOpenUpdate(true);
+  const handleCloseModal = () => setOpenUpdate(false);
+  const [chosedId, setChosedId]= React.useState("");
+
   const { 
     transactionByDate, 
     isLoading, 
@@ -98,6 +134,7 @@ function TransactionsList() {
   } = useSelector(
     (state) => state.transaction
   );
+
 
   const { 
     walletById, 
@@ -118,7 +155,8 @@ function TransactionsList() {
   }
 
   const dispatch = useDispatch();
-    
+  
+
   useEffect (() => {
       dispatch(getTransactions({ 
         wallet: walletOptValue, 
@@ -133,6 +171,8 @@ function TransactionsList() {
     valueSecond, 
     searchValue, 
     page, limit, type, dispatch ])
+
+    console.log("valueFirst", valueFirst)
 
   useEffect (() => {
     dispatch(getWallets( page, "all" ));
@@ -235,6 +275,17 @@ function TransactionsList() {
           />
         </Grid>
       </Box>
+      {openUpdate ? 
+              <TransactionModal 
+                open ={openUpdate} 
+                setOpen={setOpenUpdate} 
+                // item={chosedId} 
+                // handleCloseModal={handleCloseModal} 
+                // description={walletById[chosedId].name}
+                // amount={walletById[chosedId].classification}
+              /> 
+              : <></>
+      }
       <Box 
         sx={{ width: "100%"}}
         style={{
@@ -312,9 +363,11 @@ function TransactionsList() {
           </Grid>
         </BackgroundFirstLayer>
       </Box>
-      < PaginationHandling 
+      <PaginationHandling
         page={page} 
         totalPages={totalPages} 
+        // fromDate={valueFirst}
+        // toDate={valueSecond}
         toRoute={"transs"} 
         handllePageChange={handllePageChange}
       />

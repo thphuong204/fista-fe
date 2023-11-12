@@ -32,8 +32,8 @@ const slice = createSlice({
     getTransactionsSuccess(state, action) {
       state.isLoading = false;
       state.error = null;
-
-      const { items, total } = action.payload;
+      
+      const { items, total, fromDate, toDate} = action.payload;
       items.forEach((transs) => {
         transs.date = new Date (transs.date).toDateString();
         state.transactionById[transs._id] = transs;
@@ -53,6 +53,7 @@ const slice = createSlice({
       const tmpGroup = Object.entries(groupBy(items, "date"));
       state.transactionByDate = tmpGroup;
       state.totalTransactions = total;
+      console.log("total : ", total)
       state.totalPages = Math.ceil(total/TRANSACTIONS_PER_PAGE);
     },
 
@@ -121,6 +122,7 @@ export const getTransactions = ({ wallet, category, fromDate, toDate, descriptio
       });
       if (page === 1) dispatch(slice.actions.resetTransactions());
       dispatch(slice.actions.getTransactionsSuccess(response.data));
+    
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));
       toast.error(error.message);

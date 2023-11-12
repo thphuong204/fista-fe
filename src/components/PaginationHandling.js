@@ -5,7 +5,7 @@ import {
 import { Link } from 'react-router-dom';
 
 // Pagination Router integration
-function PaginationHandling({ page = 1, handllePageChange, totalPages = 1, toRoute = "transs" }) {
+function PaginationHandling({ page = 1, handllePageChange, totalPages = 1, toRoute = "transs", fromDate, toDate, decsription }) {
     return (
     <div className="pagination-item"
                 style={{
@@ -32,7 +32,7 @@ function PaginationHandling({ page = 1, handllePageChange, totalPages = 1, toRou
                           }}
                           
                           component={Link}
-                          to={`/${toRoute}?page=${item.page || 1}`}
+                          to={`/${toRoute}?page=${item.page || 1}&fromDate=${fromDate}&toDate=${toDate}&decsription=${decsription}`}
                           {...item}
                           onClick={(e) => handllePageChange(parseInt(e.target.innerText))}
                       />

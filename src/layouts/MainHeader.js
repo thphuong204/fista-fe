@@ -1,9 +1,11 @@
 import * as React from "react";
 import { Link } from "react-router-dom";
 import AppBar from "@mui/material/AppBar";
-import { Box, Toolbar, Typography, IconButton, Button } from "@mui/material";
+import { Box, Toolbar, Typography, IconButton, Button, MenuItem, Menu  } from "@mui/material";
+import { Divider } from "@mui/material";
 import Logo from "../components/Logo";
 import useAuth from "../hooks/useAuth";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 
 function NavButton( { textInput }) {
   return (
@@ -21,7 +23,66 @@ function NavButton( { textInput }) {
 
 
 function MainHeader() {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+
+  const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const isMenuOpen = Boolean(anchorEl);
+
+  const handleProfileMenuOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    try {
+      handleMenuClose();
+      await logout(() => {
+        navigate("/login");
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const menuId = "primary-search-account-menu";
+
+  const renderMenu = (
+    <Menu
+      anchorEl={anchorEl}
+      anchorOrigin={{
+        vertical: "bottom",
+        horizontal: "right",
+      }}
+      id={menuId}
+      keepMounted
+      transformOrigin={{
+        vertical: "top",
+        horizontal: "right",
+      }}
+      open={isMenuOpen}
+      onClose={handleMenuClose}
+    >
+      <Box sx={{ my: 1.5, px: 2.5 }}>
+        <Typography variant="subtitle2" noWrap>
+          {user?.name}
+        </Typography>
+        <Typography variant="body2" sx={{ color: "text.secondary" }} noWrap>
+          {user?.email}
+        </Typography>
+      </Box>
+      
+      <Divider sx={{ borderStyle: "dashed" }} />
+
+      <MenuItem onClick={handleLogout} sx={{ m: 1 }}>
+        Logout
+      </MenuItem>
+    </Menu>
+  );
 
   return (
     <Box>
@@ -55,9 +116,10 @@ function MainHeader() {
             <Link to='/report'>
               <NavButton textInput={"Report"}/>
             </Link>
-            <Link to='/users'>
-              <NavButton textInput={"My Account"}/>
+            <Link onClick={handleProfileMenuOpen} to='/users'>
+              <NavButton  textInput={"My Account"}/>
             </Link>
+            {renderMenu}
           </Box>
         </Toolbar>
       </AppBar>

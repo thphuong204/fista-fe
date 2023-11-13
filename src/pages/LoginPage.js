@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link as RouterLink } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import { 
+  Link,
   Button, 
   Stack, 
   Alert,
@@ -70,6 +71,13 @@ function LoginPage() {
             <Typography variant="h4" textAlign="center">
               Login
             </Typography>
+
+            <Alert severity="info">
+              Don’t have an account?{" "}
+              <Link variant="subtitle2" color="text.primary" component={RouterLink} to="/register">
+                Get started
+              </Link>
+            </Alert>
 
             <FTextField name="email" label="Email" />
             <FTextField

@@ -19,6 +19,8 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as yup from "yup";
 import { SmallButton } from '../../components/CustomizedButton';
 import { SmallTextField } from "../../components/form/CustomizedTextField";
+import 'react-date-picker/dist/DatePicker.css';
+import 'react-calendar/dist/Calendar.css';
 
 function SelectingContainer({ children }) {
   return (
@@ -182,9 +184,10 @@ function FilterList({
   })
 
   const handleFilter = async (e) => {
-    const { fromDate, toDate, description } = e
+    console.log("data wallet", e.wallet.name, " & e.wallet._id", e.wallet._id)
+    const { wallet, fromDate, toDate, description } = e
     try {
-      navigate(`?page=${page}&fromDate=${fromDate}&toDate=${toDate}&description=${description}`)
+      navigate(`?page=${page}&wallet=${wallet?._id}&fromDate=${fromDate}&toDate=${toDate}&description=${description}`)
     } catch (error) {
       reset();
       console.log("error", error)

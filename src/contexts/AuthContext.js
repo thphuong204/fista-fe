@@ -13,6 +13,7 @@ const INITIALIZE = "INITIALIZE";
 const LOGIN_SUCCESS = "LOGIN_SUCCESS";
 const LOGOUT = "LOGOUT";
 const UPDATE_PROFILE = "UPDATE_PROFILE";
+const CREATE_USER_SUCCESS ="CREATE_USER_SUCCESS";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -30,6 +31,12 @@ const reducer = (state, action) => {
         isAuthenticated: true,
         user: action.payload.user,
       };
+    case CREATE_USER_SUCCESS:
+      return{
+        ...state,
+        isAuthenticated: true,
+        user: null,
+      }
     case LOGOUT:
       return {
         ...state,
@@ -129,6 +136,20 @@ function AuthProvider({ children }) {
     callback();
   };
 
+  const register = async ({name, email, password}, callback) => {
+    const response = await apiService.post("/users", {name, email, password });
+    console.log("response in register", response)
+    const {user, accessToken} = response.data;
+    const userId = user._id;
+    setSession (accessToken, userId);
+    dispatch({
+      type: CREATE_USER_SUCCESS,
+      payload: { user },
+    });
+    callback();
+  };
+
+
   const logout = async (callback) => {
     setSession(null);
     dispatch({ type: LOGOUT });
@@ -141,6 +162,7 @@ function AuthProvider({ children }) {
         ...state,
         login,
         logout,
+        register,
       }}
     >
       {children}

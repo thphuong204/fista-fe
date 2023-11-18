@@ -10,8 +10,10 @@ import {
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
+import Moment from 'react-moment';
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from 'react-router-dom';
+
 import { TRANSACTIONS_PER_PAGE } from "../../app/config";
 import PaginationHandling from "../../components/PaginationHandling";
 import { fNumber } from '../../utils/formatNumber';
@@ -20,7 +22,7 @@ import { getWallets } from '../wallet/walletSlice';
 import { AddTransactionAccordion } from "./AddTransaction";
 import { FilterList } from "./FilterList";
 import { TransactionModal } from "./TransactionModal";
-import { getTransactions } from './transactionSlice';
+import { getTransactions, deleteTransaction } from './transactionSlice';
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -32,6 +34,18 @@ const BackgroundSecondLayer = styled('div')(({ theme }) => ({
 }));
 
 function TransactionsByDate({ date, transactionsArray, handleOpenModal, handleCloseModal, setChosedId }) {
+  const dispatch = useDispatch();
+  const [searchParams] = useSearchParams();
+
+
+  const totolInflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification === "expense" || transaction.category.classification === 'outflow').reduce((total, transaction) => total + transaction.amount, 0);
+  const totolOutflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification === "income" || transaction.category.classification === 'inflow').reduce((total, transaction) => total + transaction.amount, 0);
+  
+  //Delete Wallet not working????
+  const handleDeleteWallet = (item) => {
+    console.log('item?.category?._id',item)
+    dispatch(deleteTransaction({ _id: item?._id, page: searchParams.get('page') || "All", limit: 20}));
+  }
 
   return (
     <div
@@ -72,16 +86,16 @@ function TransactionsByDate({ date, transactionsArray, handleOpenModal, handleCl
                 {fNumber(transObject.amount)}
               </Grid>
               <Grid item xs={2} style={{ padding: 0, display: "flex", paddingLeft: "4px", justifyContent: "right" }}>
-                <IconButton edge="end" aria-label="change" style={{ padding: "2px", maxHeight: "14px", fontSize: "14px" }}
+                {/* <IconButton edge="end" aria-label="change" style={{ padding: "2px", maxHeight: "14px", fontSize: "14px" }}
                   onClick={() => {
                     handleOpenModal();
                   }}>
                   <EditIcon style={{ padding: 0, maxHeight: "14px" }} />
-                </IconButton>
+                </IconButton> */}
                 <IconButton edge="end" aria-label="delete" style={{ padding: "2px", maxHeight: "14px", fontSize: "14px" }}
-                // onClick={() => 
-                //   handleDeleteWallet(item)
-                // }
+                onClick={() => 
+                  handleDeleteWallet(transObject)
+                }
                 >
                   <DeleteIcon style={{ padding: 0, maxHeight: "14px" }} />
                 </IconButton>
@@ -89,6 +103,20 @@ function TransactionsByDate({ date, transactionsArray, handleOpenModal, handleCl
             </Grid>
           );
         })}
+        <Grid container spacing={1}>
+                  <Grid item xs={6} md={4}>
+                    <Typography style={{ fontSize: "14px", fontWeight: 600 }}>Inflow</Typography>
+                  </Grid>
+                  <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Typography style={{ fontSize: "14px" }}>{fNumber(totolInflows)}</Typography>
+                  </Grid>
+                  <Grid item xs={6} md={4}>
+                    <Typography style={{ fontSize: "14px", fontWeight: 600  }}>Outflow</Typography>
+                  </Grid>
+                  <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Typography style={{ fontSize: "14px" }}>{fNumber(totolOutflows)}</Typography>
+                  </Grid>
+                </Grid>
       </Box>
     </div>
   )
@@ -100,35 +128,43 @@ function TransactionsList() {
   const [searchParams] = useSearchParams();
 
   const [type, setType] = useState();
+  const [transaction, setTransaction] = useState();
+  const [walletOptValue, setWalletOptValue] = useState("All");
   let limit = TRANSACTIONS_PER_PAGE
+  
+  useEffect (() => {
+    dispatch(getWallets( 1, "all" ));
+    dispatch(getCategories( 1, "all" ));
+  }, [])
 
   useEffect(() => {
     const pageParam = searchParams.get('page');
     const fromDateParam = searchParams.get('fromDate');
     const toDateParam = searchParams.get('toDate');
     const descriptionParam = searchParams.get('description');
+    const walletParam = searchParams.get('wallets');
+  
 
-    dispatch(getTransactions({
+      dispatch(getTransactions({
+      wallet: walletParam || 'All',
       fromDate: fromDateParam || new Date(),
       toDate: toDateParam || new Date(),
       description: descriptionParam || '',
       page: pageParam || 1,
       limit
     }))
-
   }, [dispatch, limit, searchParams])
-
-
   const [openUpdate, setOpenUpdate] = React.useState(false);
 
-
+  const fromDateString = searchParams.get('fromDate') || new Date();
+  const toDateString = searchParams.get('toDate') || new Date();
+  
   const {
     transactionByDate,
     totalPages
   } = useSelector(
     (state) => state.transaction
   );
-
 
   const {
     walletById,
@@ -227,6 +263,8 @@ function TransactionsList() {
             walletById={walletById}
             currentPageWallets={currentPageWallets}
             page={searchParams.get('page') || 1}
+            walletOptValue={walletOptValue}
+            setWalletOptValue={setWalletOptValue}
           />
         </Grid>
       </Box>
@@ -275,10 +313,10 @@ function TransactionsList() {
                     color: "#4c4c4c"
                   }}
                 >
-                  THIS MONTH
+                 {`From: `}<Moment format="DD/MMM/YYYY">{searchParams.get('fromDate') ? searchParams.get('fromDate') : fromDateString}</Moment>{` - To: `} <Moment format="DD/MMM/YYYY">{toDateString}</Moment>
                 </Typography>
               </Container>
-              <Container
+              {/* <Container
                 style={{
                   minHeight: "100px",
                   display: "flex",
@@ -300,7 +338,7 @@ function TransactionsList() {
                     <Typography style={{ fontSize: "14px" }}>{fNumber(-10000000)}</Typography>
                   </Grid>
                 </Grid>
-              </Container>
+              </Container> */}
             </BackgroundSecondLayer>
             <List
               style={{ padding: "0" }}

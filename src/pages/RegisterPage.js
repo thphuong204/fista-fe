@@ -69,9 +69,9 @@ function RegisterPage() {
     <Container maxWidth="xs">
       <FormProvider methods={methods} onSubmit={handleSubmit(onSubmit)}>
         <Stack spacing={3}>
-          {!!errors.responseError && (
+          {!!errors.responseError ? (
             <Alert severity="error">{errors.responseError.message}</Alert>
-          )}
+          ): null}
           <Alert severity="info">
             Already have an account?{" "}
             <Link variant="subtitle2" color="text.primary" component={RouterLink} to="/login">

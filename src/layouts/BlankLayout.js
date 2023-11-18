@@ -4,10 +4,7 @@ import Logo from "../components/Logo";
 import { Stack } from "@mui/material";
 
 const HeaderStyle = styled("header")(({ theme }) => ({
-  top: "10%",
-  left: "50%",
-  transform: "translateX(-50%)",
-  position: "absolute",
+  marginBottom: '48px',
 }));
 
 function BlankLayout() {

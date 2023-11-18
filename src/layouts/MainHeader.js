@@ -75,7 +75,6 @@ function MainHeader() {
           {user?.email}
         </Typography>
       </Box>
-      
       <Divider sx={{ borderStyle: "dashed" }} />
 
       <MenuItem onClick={handleLogout} sx={{ m: 1 }}>

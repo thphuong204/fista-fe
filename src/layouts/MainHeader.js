@@ -109,9 +109,9 @@ function MainHeader() {
             <Link to='/categories'>
               <NavButton textInput={"Categories"}/>
             </Link>
-            <Link to='/transs'>
+            <a href='/'>
               <NavButton textInput={"Transaction"}/>
-            </Link>
+            </a>
             <Link to='/report'>
               <NavButton textInput={"Report"}/>
             </Link>

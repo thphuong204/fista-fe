@@ -38,13 +38,13 @@ function TransactionsByDate({ date, transactionsArray, handleOpenModal, handleCl
   const [searchParams] = useSearchParams();
 
 
-  const totolInflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification === "expense" || transaction.category.classification === 'outflow').reduce((total, transaction) => total + transaction.amount, 0);
-  const totolOutflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification === "income" || transaction.category.classification === 'inflow').reduce((total, transaction) => total + transaction.amount, 0);
+  const totolInflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification ===  "income" || transaction.category.classification === 'inflow').reduce((total, transaction) => total + transaction.amount, 0);
+  const totolOutflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification === "expense" || transaction.category.classification === 'outflow').reduce((total, transaction) => total + transaction.amount, 0);
   
   //Delete Wallet not working????
   const handleDeleteWallet = (item) => {
     console.log('item?.category?._id',item)
-    dispatch(deleteTransaction({ _id: item?._id, page: searchParams.get('page') || "All", limit: 20}));
+    dispatch(deleteTransaction({ _id: item?._id, page: searchParams.get('page') || "All", limit: 20, toDate: searchParams.get('toDate'), fromDate: searchParams.get('fromDate')}));
   }
 
   return (

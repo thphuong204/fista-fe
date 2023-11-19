@@ -130,19 +130,23 @@ export const getTransactions = ({ wallet, category, fromDate, toDate, descriptio
   };
 
   export const deleteTransaction =
-  ({ _id, page, limit }) =>
+  ({ _id, page, limit, fromDate, toDate }) =>
   async (dispatch) => {
     dispatch(slice.actions.startLoading());
     try {
 
-      const params = { page, limit };
+      const params = { page, limit, fromDate, toDate };
       await apiService.delete(`/transs/${_id}`);
       toast.success("Delete Transaction successful");
 
+      console.log("param 1", params)
       const response = await apiService.get(`/transs`, {
         params,
       })
+
+      console.log("params delete: ", response)
       dispatch(slice.actions.resetTransactions());
+
       dispatch(slice.actions.deleteTransactionSuccess(response.data));
     } catch (error) {
       dispatch(slice.actions.hasError(error.message));

@@ -112,9 +112,6 @@ function MainHeader() {
             <a href='/'>
               <NavButton textInput={"Transaction"}/>
             </a>
-            {/* <Link to='/report'>
-              <NavButton textInput={"Report"}/>
-            </Link> */}
             <Link onClick={handleProfileMenuOpen} to='/users'>
               <NavButton  textInput={"My Account"}/>
             </Link>

@@ -1,5 +1,4 @@
 import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import {
   Box,
   Container,
@@ -22,7 +21,7 @@ import { getWallets } from '../wallet/walletSlice';
 import { AddTransactionAccordion } from "./AddTransaction";
 import { FilterList } from "./FilterList";
 import { TransactionModal } from "./TransactionModal";
-import { getTransactions, deleteTransaction } from './transactionSlice';
+import { deleteTransaction, getTransactions } from './transactionSlice';
 
 const BackgroundFirstLayer = styled('div')(({ theme }) => ({
   backgroundColor: theme.palette.info.light,
@@ -38,13 +37,13 @@ function TransactionsByDate({ date, transactionsArray, handleOpenModal, handleCl
   const [searchParams] = useSearchParams();
 
 
-  const totolInflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification ===  "income" || transaction.category.classification === 'inflow').reduce((total, transaction) => total + transaction.amount, 0);
+  const totolInflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification === "income" || transaction.category.classification === 'inflow').reduce((total, transaction) => total + transaction.amount, 0);
   const totolOutflows = transactionsArray.map(transaction => transaction).filter(transaction => transaction.category.classification === "expense" || transaction.category.classification === 'outflow').reduce((total, transaction) => total + transaction.amount, 0);
-  
+
   //Delete Wallet not working????
   const handleDeleteWallet = (item) => {
-    console.log('item?.category?._id',item)
-    dispatch(deleteTransaction({ _id: item?._id, page: searchParams.get('page') || "All", limit: 20, toDate: searchParams.get('toDate'), fromDate: searchParams.get('fromDate')}));
+    console.log('item?.category?._id', item)
+    dispatch(deleteTransaction({ _id: item?._id, page: searchParams.get('page') || "All", limit: 20, toDate: searchParams.get('toDate'), fromDate: searchParams.get('fromDate') }));
   }
 
   return (
@@ -86,16 +85,10 @@ function TransactionsByDate({ date, transactionsArray, handleOpenModal, handleCl
                 {fNumber(transObject.amount)}
               </Grid>
               <Grid item xs={2} style={{ padding: 0, display: "flex", paddingLeft: "4px", justifyContent: "right" }}>
-                {/* <IconButton edge="end" aria-label="change" style={{ padding: "2px", maxHeight: "14px", fontSize: "14px" }}
-                  onClick={() => {
-                    handleOpenModal();
-                  }}>
-                  <EditIcon style={{ padding: 0, maxHeight: "14px" }} />
-                </IconButton> */}
                 <IconButton edge="end" aria-label="delete" style={{ padding: "2px", maxHeight: "14px", fontSize: "14px" }}
-                onClick={() => 
-                  handleDeleteWallet(transObject)
-                }
+                  onClick={() =>
+                    handleDeleteWallet(transObject)
+                  }
                 >
                   <DeleteIcon style={{ padding: 0, maxHeight: "14px" }} />
                 </IconButton>
@@ -104,37 +97,35 @@ function TransactionsByDate({ date, transactionsArray, handleOpenModal, handleCl
           );
         })}
         <Grid container spacing={1}>
-                  <Grid item xs={6} md={4}>
-                    <Typography style={{ fontSize: "14px", fontWeight: 600 }}>Inflow</Typography>
-                  </Grid>
-                  <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Typography style={{ fontSize: "14px" }}>{fNumber(totolInflows)}</Typography>
-                  </Grid>
-                  <Grid item xs={6} md={4}>
-                    <Typography style={{ fontSize: "14px", fontWeight: 600  }}>Outflow</Typography>
-                  </Grid>
-                  <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
-                    <Typography style={{ fontSize: "14px" }}>{fNumber(totolOutflows)}</Typography>
-                  </Grid>
-                </Grid>
+          <Grid item xs={6} md={4}>
+            <Typography style={{ fontSize: "14px", fontWeight: 600 }}>Inflow</Typography>
+          </Grid>
+          <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Typography style={{ fontSize: "14px" }}>{fNumber(totolInflows)}</Typography>
+          </Grid>
+          <Grid item xs={6} md={4}>
+            <Typography style={{ fontSize: "14px", fontWeight: 600 }}>Outflow</Typography>
+          </Grid>
+          <Grid item xs={6} md={8} style={{ display: "flex", justifyContent: "flex-end" }}>
+            <Typography style={{ fontSize: "14px" }}>{fNumber(totolOutflows)}</Typography>
+          </Grid>
+        </Grid>
       </Box>
     </div>
   )
 }
 
 function TransactionsList() {
-
   const dispatch = useDispatch();
   const [searchParams] = useSearchParams();
 
   const [type, setType] = useState();
-  const [transaction, setTransaction] = useState();
   const [walletOptValue, setWalletOptValue] = useState("All");
   let limit = TRANSACTIONS_PER_PAGE
-  
-  useEffect (() => {
-    dispatch(getWallets( 1, "all" ));
-    dispatch(getCategories( 1, "all" ));
+
+  useEffect(() => {
+    dispatch(getWallets(1, "all"));
+    dispatch(getCategories(1, "all"));
   }, [])
 
   useEffect(() => {
@@ -143,9 +134,9 @@ function TransactionsList() {
     const toDateParam = searchParams.get('toDate');
     const descriptionParam = searchParams.get('description');
     const walletParam = searchParams.get('wallets');
-  
 
-      dispatch(getTransactions({
+
+    dispatch(getTransactions({
       wallet: walletParam || 'All',
       fromDate: fromDateParam || new Date(),
       toDate: toDateParam || new Date(),
@@ -158,7 +149,7 @@ function TransactionsList() {
 
   const fromDateString = searchParams.get('fromDate') || new Date();
   const toDateString = searchParams.get('toDate') || new Date();
-  
+
   const {
     transactionByDate,
     totalPages
@@ -313,7 +304,7 @@ function TransactionsList() {
                     color: "#4c4c4c"
                   }}
                 >
-                 {`From: `}<Moment format="DD/MMM/YYYY">{searchParams.get('fromDate') ? searchParams.get('fromDate') : fromDateString}</Moment>{` - To: `} <Moment format="DD/MMM/YYYY">{toDateString}</Moment>
+                  {`From: `}<Moment format="DD/MMM/YYYY">{searchParams.get('fromDate') ? searchParams.get('fromDate') : fromDateString}</Moment>{` - To: `} <Moment format="DD/MMM/YYYY">{toDateString}</Moment>
                 </Typography>
               </Container>
               {/* <Container
@@ -345,7 +336,7 @@ function TransactionsList() {
             >
               {transactionByDate.map((trans, index) => {
                 return (
-                  < TransactionsByDate
+                  <TransactionsByDate
                     key={index}
                     date={trans[0]}
                     transactionsArray={trans[1]}

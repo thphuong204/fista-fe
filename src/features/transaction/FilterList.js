@@ -163,8 +163,6 @@ function FilterList({
     description: searchParams.get('description') || ""
   };
 
-  console.log("defaultFilterValues", defaultFilterValues)
-
   const methods = useForm({
     resolver: yupResolver(FilterTransSchema),
     defaultValues: defaultFilterValues,
